@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart - SKYSION</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .cart-container {
+      padding: 150px 6% 80px 6%;
+      min-height: 80vh;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .cart-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+
+    .cart-table th,
+    .cart-table td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      vertical-align: middle;
+    }
+
+    .cart-table th {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+    }
+
+    /* ইমেজ ও নামের এলাইনমেন্ট সুন্দর করার জন্য */
+    .cart-product-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .cart-product-info img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      background: #120507;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 20px;
+      font-size: 18px;
+      margin-top: 20px;
+      letter-spacing: 1px;
+    }
+
+    .total-price {
+      color: #d12e43;
+      font-weight: 600;
+    }
+
+    .checkout-box {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 30px;
+    }
+
+    .remove-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 16px;
+    }
+
+    .remove-btn:hover {
+      color: #d12e43;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="navbar">
+    <div class="logo">
+      <a href="index.html">
+        <img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo">
+      </a>
+    </div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="shop.html">SHOP</a></li>
+        <li><a href="wishlist.html">WISHLIST</a></li>
+        <li><a href="account.html">ACCOUNT</a></li>
+      </ul>
+    </nav>
+    <div class="nav-icons">
+      <a href="cart.html" class="active">CART (<span id="cart-count">0</span>)</a>
+    </div>
+  </header>
+
+  <main class="cart-container">
+    <h1 class="page-title">Your Cart</h1>
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="cart-items-body">
+        <!-- জাভাস্ক্রিপ্ট দিয়ে এখানে ডায়নামিক রো (Rows) লোড হবে -->
+      </tbody>
+    </table>
+
+    <div class="cart-total">
+      <span>Total:</span>
+      <span class="total-price" id="cart-total-price">৳ ০</span>
+    </div>
+
+    <div class="checkout-box">
+      <a href="checkout.html" class="btn-premium">PROCEED TO CHECKOUT</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 SKYSION MAISON. ALL RIGHTS RESERVED.</p>
+  </footer>
+
+  <!-- জাভাস্ক্রিপ্ট ফাইলগুলোর সঠিক সিরিয়াল লিংক -->
+  <script src="js/product.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>

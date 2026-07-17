@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account - SKYSION</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .account-container {
+      padding: 150px 6% 80px 6%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      min-height: 80vh;
+    }
+
+    @media (max-width: 768px) {
+      .account-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .profile-card,
+    .wallet-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 40px;
+    }
+
+    .account-container h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 400;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+    }
+
+    .profile-info p {
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .wallet-amount {
+      font-size: 36px;
+      color: #d12e43;
+      font-weight: 600;
+      margin: 15px 0 30px 0;
+    }
+
+    .deposit-form input,
+    .deposit-form select {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      margin-bottom: 15px;
+    }
+
+    /* Gateway Modal */
+    .gw-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .gw-box {
+      width: 100%;
+      max-width: 400px;
+      padding: 30px;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    .bkash-theme {
+      background: #e2136e;
+      color: #fff;
+    }
+
+    .nagad-theme {
+      background: #f69320;
+      color: #fff;
+    }
+
+    .gw-input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 15px;
+      border: none;
+      text-align: center;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="navbar">
+    <div class="logo">
+      <a href="index.html">
+        <!-- একদম সঠিক পাথটি নিচে দেওয়া হলো -->
+        <img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo">
+      </a>
+    </div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="shop.html">SHOP</a></li>
+        <li><a href="wishlist.html">WISHLIST</a></li>
+        <li><a href="account.html" class="active">ACCOUNT</a></li>
+      </ul>
+    </nav>
+    <div class="nav-icons">
+      <a href="cart.html">CART (<span id="cart-count">0</span>)</a>
+    </div>
+  </header>
+
+  <main class="account-container">
+    <!-- বামে: প্রোফাইল ডিটেইলস -->
+    <div class="profile-card">
+      <h2>Maison Profile</h2>
+      <div class="profile-info" id="user-profile-data">
+        <!-- JS দিয়ে আসবে -->
+      </div>
+    </div>
+
+    <!-- ডানে: স্কাইশন ওয়ালেট -->
+    <div class="wallet-card">
+      <h2>Skysion Wallet</h2>
+      <p style="font-size: 12px; letter-spacing: 1px; color: rgba(255,255,255,0.5);">AVAILABLE BALANCE</p>
+      <div class="wallet-amount" id="wallet-balance">৳ 0</div>
+
+      <h3>Top Up Wallet</h3>
+      <form class="deposit-form" id="deposit-form">
+        <select id="deposit-method">
+          <option value="bkash">bKash Direct</option>
+          <option value="nagad">Nagad Direct</option>
+        </select>
+        <input type="number" id="deposit-qty" placeholder="Enter Amount (৳)" required min="10">
+        <button type="submit" class="btn-premium" style="width:100%;">ADD MONEY</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- পেমেন্ট পপআপ স্ক্রিন -->
+  <div class="gw-modal" id="wallet-gw">
+    <div class="gw-box" id="gw-card">
+      <h3 id="gw-title">bKash Gateway</h3>
+      <p>Depositing: <strong id="gw-amt">৳ 0</strong></p>
+      <div id="step-1">
+        <input type="tel" class="gw-input" id="gw-phone" placeholder="Your Wallet Number" maxlength="11">
+        <button class="btn-premium" style="background:#fff; color:#000; width:100%;" onclick="nextStep()">NEXT</button>
+      </div>
+      <div id="step-2" style="display:none;">
+        <input type="text" class="gw-input" id="gw-otp" placeholder="Enter OTP (Any Number)">
+        <input type="password" class="gw-input" id="gw-pin" placeholder="Enter PIN (Hint: 12345)">
+        <p style="font-size:11px; color:rgba(255,255,255,0.7); margin-bottom:10px;">*সঠিক পিন ১২৩৪৫</p>
+        <button class="btn-premium" style="background:#fff; color:#000; width:100%;"
+          onclick="verifyAndDeposit()">CONFIRM DEPOSIT</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    let depAmt = 0;
+    let depMethod = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedUser = JSON.parse(localStorage.getItem('cherish_user'));
+      if (!localStorage.getItem('isLoggedIn')) {
+        window.location.href = 'login.html';
+        return;
+      }
+      document.getElementById('user-profile-data').innerHTML = `
+                <p><strong>Name:</strong> ${savedUser.name}</p>
+                <p><strong>Email:</strong> ${savedUser.email}</p>
+                <button class="btn-premium" onclick="logout()" style="width:100%; margin-top:20px;">LOG OUT</button>
+            `;
+      updateWalletDisplay();
+    });
+
+    document.getElementById('deposit-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      depAmt = parseFloat(document.getElementById('deposit-qty').value);
+      depMethod = document.getElementById('deposit-method').value;
+
+      document.getElementById('wallet-gw').style.display = 'flex';
+      document.getElementById('gw-card').className = 'gw-box ' + depMethod + '-theme';
+      document.getElementById('gw-title').innerText = depMethod.toUpperCase() + ' Security Gateway';
+      document.getElementById('gw-amt').innerText = `৳ ${depAmt}`;
+      document.getElementById('step-1').style.display = 'block';
+      document.getElementById('step-2').style.display = 'none';
+    });
+
+    function nextStep() {
+      if (document.getElementById('gw-phone').value.length < 11) { alert('Enter valid number!'); return; }
+      document.getElementById('step-1').style.display = 'none';
+      document.getElementById('step-2').style.display = 'block';
+    }
+
+    function verifyAndDeposit() {
+      const pin = document.getElementById('gw-pin').value;
+      // পিন ভেরিফিকেশন চেক (১২৩৪৫)
+      if (pin === '12345') {
+        let currentBal = parseFloat(localStorage.getItem('skysion_wallet')) || 0;
+        localStorage.setItem('skysion_wallet', (currentBal + depAmt).toString());
+
+        alert(`✨ Congratulations! ৳${depAmt} successfully added to your Skysion Wallet.`);
+        document.getElementById('wallet-gw').style.display = 'none';
+        updateWalletDisplay();
+        document.getElementById('deposit-qty').value = '';
+      } else {
+        alert('❌ Incorrect PIN! Payment Failed. Try again with 12345.');
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('isLoggedIn');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+
+</html>

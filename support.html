@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Support - SKYSION</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .support-container {
+      padding: 150px 6% 80px 6%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      min-height: 80vh;
+    }
+
+    @media (max-width: 768px) {
+      .support-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .support-info,
+    .support-form-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 40px;
+    }
+
+    .support-container h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    .support-info p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+
+    .info-item {
+      margin-bottom: 25px;
+    }
+
+    .info-item h4 {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.4);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .info-item p {
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 0;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: #d12e43;
+      outline: none;
+      background: rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="navbar">
+    <div class="logo">
+      <a href="index.html">
+        <img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo">
+      </a>
+    </div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="shop.html">SHOP</a></li>
+        <li><a href="wishlist.html">WISHLIST</a></li>
+        <li><a href="account.html">ACCOUNT</a></li>
+      </ul>
+    </nav>
+    <div class="nav-icons">
+      <a href="cart.html">CART (<span id="cart-count">0</span>)</a>
+    </div>
+  </header>
+
+  <main class="support-container">
+    <!-- বাম পাশ: যোগাযোগের সাধারণ তথ্য -->
+    <div class="support-info">
+      <h2>Conciérge Support</h2>
+      <p>আমাদের ডেডিকেটেড সাপোর্ট টিম আপনার যেকোনো জিজ্ঞাসা বা অর্ডার সংক্রান্ত সমস্যার সমাধানে প্রস্তুত। নিচে ফর্মটি
+        পূরণ করুন অথবা সরাসরি আমাদের ইমেইলে যোগাযোগ করুন।</p>
+
+      <div class="info-item">
+        <h4>Email Response</h4>
+        <p>support@skysionmaison.com</p>
+      </div>
+
+      <div class="info-item">
+        <h4>Operating Hours</h4>
+        <p>Sunday - Thursday: 10:00 AM - 06:00 PM</p>
+      </div>
+
+      <div class="info-item">
+        <h4>Response Time</h4>
+        <p>সাধারণত আমরা ২৪ ঘণ্টার মধ্যে রিপ্লাই দিয়ে থাকি।</p>
+      </div>
+    </div>
+
+    <!-- ডান পাশ: কাস্টমার মেসেজ ফর্ম -->
+    <div class="support-form-box">
+      <h2>Send a Message</h2>
+      <form id="support-form">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="support-name" required placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="support-email" required placeholder="example@mail.com">
+        </div>
+        <div class="form-group">
+          <label>Order ID (Optional)</label>
+          <input type="text" id="support-order" placeholder="#1024">
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="support-message" rows="5" required placeholder="আপনার সমস্যাটি বিস্তারিত লিখুন..."></textarea>
+        </div>
+        <button type="submit" class="btn-premium" style="width: 100%; margin-top: 10px;">SUBMIT TICKET</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 SKYSION MAISON. ALL RIGHTS RESERVED.</p>
+  </footer>
+
+  <!-- জাভাস্ক্রিপ্ট ফাইলগুলোর সঠিক সিরিয়াল লিংক -->
+  <script src="js/product.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,138 @@
+/* গ্লোবাল এবং ফন্ট রিসেট */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0b0203; /* ডার্ক চেরি-ব্ল্যাক মিক্স */
+    color: #ffffff;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow-x: hidden;
+}
+
+/* কমন হেডার ও নেভিগেশন বার */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 6%;
+    background-color: rgba(11, 2, 3, 0.8);
+    backdrop-filter: blur(10px); /* ঝাপসা কাঁচের মতো ইফেক্ট */
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(88, 17, 26, 0.2);
+}
+
+.logo a {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 6px;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+}
+
+.nav-links li {
+    margin: 0 20px;
+}
+
+.nav-links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    transition: 0.3s ease;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: #d12e43; /* গ্লোয়িং চেরি রেড */
+}
+
+.nav-icons a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+/* কমন ওভাল ডিসকভার/অ্যাকশন বাটন */
+.btn-premium {
+    display: inline-block;
+    padding: 12px 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 3px;
+    transition: 0.4s ease;
+    background: transparent;
+    cursor: pointer;
+}
+
+.btn-premium:hover {
+    background-color: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+}
+
+/* ব্যাকগ্রাউন্ড গ্লো ইফেক্ট */
+.glow-bg {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(140px);
+    z-index: -1;
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+/* কমন ফুটার */
+footer {
+    padding: 60px 6% 30px 6%;
+    background-color: #050102;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 2px;
+}
+.logo a {
+    display: flex;
+    align-items: center;
+}
+
+#nav-logo {
+    height: 45px; /* লোগো বড়-ছোট করতে চাইলে এই পিক্সেল কম-বেশি করবে */
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+#nav-logo:hover {
+    transform: scale(1.05);
+}
+/* কার্সরের গ্লো লাইট ইফেক্ট */
+.cursor-glow {
+  position: fixed;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(209, 46, 67, 0.15) 0%, rgba(88, 17, 26, 0.05) 50%, transparent 100%);
+  border-radius: 50%;
+  pointer-events: none; /* যাতে মাউস ক্লিক বা বাটনে বাধা না দেয় */
+  transform: translate(-50%, -50%);
+  z-index: -1; /* এটা সব লেখার পেছনে ব্যাকগ্রাউন্ডে থাকবে */
+  transition: transform 0.05s linear; /* মাউসের সাথে স্মুথ মুভমেন্টের জন্য */
+  mix-blend-mode: screen;
+}
