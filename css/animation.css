@@ -1,0 +1,74 @@
+/* ==========================================================================
+   ১. লোগো এবং টেক্সটের জন্য স্মুথ ফেড-ইন ও ওপরে ওঠার অ্যানিমেশন (Fade In Up)
+   ========================================================================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-up {
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+/* ==========================================================================
+   ২. চেরি রেড গ্লো ইফেক্ট (Glowing Pulse) - বাটন বা বিশেষ উপাদানের জন্য
+   ========================================================================== */
+@keyframes glowingPulse {
+    0% {
+        box-shadow: 0 0 5px rgba(209, 46, 67, 0.2), 0 0 10px rgba(209, 46, 67, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(209, 46, 67, 0.6), 0 0 25px rgba(209, 46, 67, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(209, 46, 67, 0.2), 0 0 10px rgba(209, 46, 67, 0.2);
+    }
+}
+
+/* এটি তোমার ডিসকভার/অ্যাকশন বাটনে অটোমেটিক গ্লো দেবে */
+.btn-premium {
+    animation: glowingPulse 3s infinite ease-in-out;
+}
+
+/* ==========================================================================
+   ৩. ব্যাকগ্রাউন্ড গ্লো অনবরত ঘোরার অ্যানিমেশন (Rotate Glow)
+   ========================================================================== */
+@keyframes rotateGlow {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.1);
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+.glow-bg {
+    animation: rotateGlow 15s infinite linear;
+}
+
+/* ==========================================================================
+   ৪. নেভবার লিংকগুলোর জন্য নিচের দিকে নামার অ্যানিমেশন (Fade In Down)
+   ========================================================================== */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.navbar {
+    animation: fadeInDown 0.5s ease forwards;
+}
