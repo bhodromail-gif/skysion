@@ -15,7 +15,7 @@ function addToCart(productId) {
     const cartItem = cart.find(item => item.id === productId);
 
     if (cartItem) {
-        cartItem.quantity += 1; // থাকলে পরিমাণ বাড়ানো
+        cartItem.quantity += 1; // থাকলে পরিমাণ বাড়ানো
     } else {
         cart.push({
             id: product.id,
@@ -27,7 +27,7 @@ function addToCart(productId) {
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
     
-    alert(`${product.name} কার্টে যোগ করা হয়েছে!`);
+    alert(`${product.name} কার্টে যোগ করা হয়েছে!`);
     
     // যদি শপ পেজে থাকে, তবে কার্ট রি-রেন্ডার করার দরকার নেই, শুধু কাউন্ট বদলাবে
     if (document.getElementById('cart-items-body')) {
@@ -54,7 +54,7 @@ function updateCartCount() {
     }
 }
 
-// ৪. কার্ট পেজে প্রোডাক্টের টেবিল ও টোটাল প্রাইস রেন্ডার করার ফাংশন
+// ४. কার্ট পেজে প্রোডাক্টের টেবিল ও টোটাল প্রাইস রেন্ডার করার ফাংশন
 function displayCart() {
     const cartBody = document.getElementById('cart-items-body');
     const totalPriceElement = document.getElementById('cart-total-price');
@@ -105,9 +105,10 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCartCount();
     displayCart();
 });
+
 let totalOrderPrice = 0;
 
-// চেকাউট পেজে অর্ডারের সঠিক আইটেম এবং ৪৯৯ টাকার হিসাব দেখানোর ফাংশন
+// চেকাউট পেজে অর্ডারের সঠিক আইটেম এবং হিসাব দেখানোর ফাংশন
 function displayCheckoutSummary() {
     const summaryContainer = document.getElementById('checkout-summary-items');
     const totalElement = document.getElementById('checkout-total-price');
@@ -144,37 +145,64 @@ function displayCheckoutSummary() {
 
     if (totalElement) totalElement.innerText = `৳ ${totalOrderPrice.toLocaleString()}`;
 
-    // ওয়ালেট ব্যালেন্স শো করানো (লোকাল স্টোরেজ থেকে)
+    // ওয়ালেট ব্যালেন্স শো করানো (লোকাল স্টোরেজ থেকে)
     if (walletDisplay) {
         let currentBal = parseFloat(localStorage.getItem('skysion_wallet')) || 0;
         walletDisplay.innerText = `৳ ${currentBal.toLocaleString()}`;
     }
 }
 
-// অর্ডার প্লেস ফর্ম সাবমিশন হ্যান্ডেলার
-const checkoutForm = document.getElementById('checkout-submit-form');
-if (checkoutForm) {
-    checkoutForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const method = document.getElementById('payment-method').value;
-        let currentBal = parseFloat(localStorage.getItem('skysion_wallet')) || 0;
+// ৫. অর্ডার প্লেস মেথড (লোকাল স্টোরেজে ট্র্যাকিং ড্যাশবোর্ড ডাটা সেভ)
+function placeOrder(method) {
+    let currentBal = parseFloat(localStorage.getItem('skysion_wallet')) || 0;
+    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
 
-        if (method === 'wallet') {
-            if (currentBal >= totalOrderPrice) {
-                // ওয়ালেট থেকে টাকা মাইনাস করা
-                localStorage.setItem('skysion_wallet', (currentBal - totalOrderPrice).toString());
-                alert('🎉 Congratulations! Payment successful via Skysion Wallet. Your order has been placed.');
-                localStorage.removeItem('cart'); // কার্ট ক্লিয়ার করা
-                window.location.href = 'index.html';
-            } else {
-                alert('❌ Insufficient Wallet Balance! Please top up your wallet from Account Page.');
-            }
+    // কার্ট খালি থাকলে অর্ডার আটকানো
+    if (cartItems.length === 0) {
+        alert('❌ Your cart is empty!');
+        return;
+    }
+
+    // নতুন অর্ডারের ডাটা অবজেক্ট তৈরি
+    const newOrder = {
+        orderId: "SK-" + Math.floor(100000 + Math.random() * 900000), // ইউনিক অর্ডার আইডি জেনারেট
+        date: new Date().toLocaleDateString('bn-BD'), // অর্ডার সাবমিটের তারিখ
+        total: totalOrderPrice,
+        payment: method === 'wallet' ? 'Skysion Wallet' : 'Cash on Delivery',
+        status: 'Pending', // ডিফল্ট স্ট্যাটাস পেন্ডিং থাকবে
+        items: cartItems.map(item => {
+            const product = products.find(p => p.id === item.id);
+            return {
+                name: product ? product.name : 'Unknown Product',
+                quantity: item.quantity,
+                price: product ? product.price : 0
+            };
+        })
+    };
+
+    // লোকাল স্টোরেজে আগের অর্ডারের সাথে নতুনটি যোগ করা
+    let myOrders = JSON.parse(localStorage.getItem('my_orders')) || [];
+    myOrders.unshift(newOrder); // লেটেস্ট অর্ডার ওপরে রাখার জন্য
+
+    if (method === 'wallet') {
+        if (currentBal >= totalOrderPrice) {
+            // ওয়ালেট থেকে ব্যালেন্স কেটে নেওয়া
+            localStorage.setItem('skysion_wallet', (currentBal - totalOrderPrice).toString());
+            localStorage.setItem('my_orders', JSON.stringify(myOrders));
+            
+            alert('🎉 Congratulations! Payment successful via Skysion Wallet. Your order has been placed.');
+            localStorage.removeItem('cart'); // কার্ট খালি করা
+            window.location.href = 'orders.html'; // সরাসরি কাস্টমারের অর্ডার ড্যাশবোর্ডে পাঠাবে
         } else {
-            alert('Order placed via Cash on Delivery!');
-            localStorage.removeItem('cart'); // কার্ট ক্লিয়ার করা
-            window.location.href = 'index.html';
+            alert('❌ Insufficient Wallet Balance! Please top up your wallet from Account Page.');
         }
-    });
+    } else {
+        localStorage.setItem('my_orders', JSON.stringify(myOrders));
+        
+        alert('🎉 Order placed successfully via Cash on Delivery!');
+        localStorage.removeItem('cart'); // কার্ট খালি করা
+        window.location.href = 'orders.html'; // সরাসরি কাস্টমারের অর্ডার ড্যাশবোর্ডে পাঠাবে
+    }
 }
 
 // আগের DOMContentLoaded লিসেনারের ভেতরে রান করানোর জন্য
