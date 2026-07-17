@@ -1,53 +1,18 @@
-// 🌟 ফায়ারবেস SDK এবং ফায়ারস্টোর লোড ও কনফিগারেশন
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// Order placement and localStorage handling (Google Sheets Integrated)
 
-// তোমার রিয়েল ফায়ারবেস কনফিগারেশন 👇
-const firebaseConfig = {
-    apiKey: "AIzaSyDWljpSviJczy_4v6OmAPXCF34eQXv95CA",
-    authDomain: "skysion-shop.firebaseapp.com",
-    projectId: "skysion-shop",
-    storageBucket: "skysion-shop.firebasestorage.app",
-    messagingSenderId: "849058892138",
-    appId: "1:849058892138:web:7ee33dfd8619d0e5ebfd13",
-    measurementId: "G-Q6832B2YQ9"
-};
-
-// ফায়ারবেস ও ফায়ারস্টোর ইনিশিয়ালাইজেশন
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// লোকাল স্টোরেজ থেকে কার্টের ডাটা গেট করা
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 // ১. কার্টে প্রোডাক্ট অ্যাড করার ফাংশন
 function addToCart(productId) {
     const product = products.find(p => p.id === productId);
-    
-    if (!product) {
-        console.error("Product not found!");
-        return;
-    }
-
+    if (!product) { console.error("Product not found!"); return; }
     const cartItem = cart.find(item => item.id === productId);
-
-    if (cartItem) {
-        cartItem.quantity += 1;
-    } else {
-        cart.push({
-            id: product.id,
-            quantity: 1
-        });
-    }
-
+    if (cartItem) { cartItem.quantity += 1; } 
+    else { cart.push({ id: product.id, quantity: 1 }); }
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
-    
     alert(`${product.name} কার্টে যোগ করা হয়েছে!`);
-    
-    if (document.getElementById('cart-items-body')) {
-        displayCart();
-    }
+    if (document.getElementById('cart-items-body')) { displayCart(); }
 }
 
 // ২. কার্ট থেকে প্রোডাক্ট রিমুভ করার ফাংশন
@@ -58,7 +23,7 @@ function removeFromCart(productId) {
     updateCartCount();
 }
 
-// ৩. হেডার বা নেভিগেশন বারে কার্টের টোটাল সংখ্যা (Count) দেখানোর ফাংশন
+// ৩. কার্ট সংখ্যা আপডেট
 function updateCartCount() {
     const cartCountElement = document.getElementById('cart-count');
     if (cartCountElement) {
@@ -67,196 +32,99 @@ function updateCartCount() {
     }
 }
 
-// ৪. কার্ট পেজে প্রোডাক্টের টেবিল ও টোটাল প্রাইস রেন্ডার করার ফাংশন
+// ৪. কার্ট পেজ রেন্ডার
 function displayCart() {
     const cartBody = document.getElementById('cart-items-body');
     const totalPriceElement = document.getElementById('cart-total-price');
-    
     if (!cartBody) return;
-
     cartBody.innerHTML = "";
     let grandTotal = 0;
-
     if (cart.length === 0) {
-        cartBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:rgba(255,255,255,0.4); padding: 40px 0;">Your cart is empty.</td></tr>`;
+        cartBody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 40px 0;">Your cart is empty.</td></tr>`;
         if (totalPriceElement) totalPriceElement.innerText = "৳ ০";
         return;
     }
-
     cart.forEach(item => {
         const product = products.find(p => p.id === item.id);
-
         if (product) {
             let itemTotal = product.price * item.quantity;
             grandTotal += itemTotal;
-
             cartBody.innerHTML += `
                 <tr>
-                    <td>
-                        <div class="cart-product-info">
-                            <img src="${product.image}" alt="${product.name}">
-                            <span>${product.name} ${item.quantity > 1 ? `x ${item.quantity}` : ''}</span>
-                        </div>
-                    </td>
+                    <td><div class="cart-product-info"><img src="${product.image}" alt="${product.name}"><span>${product.name} ${item.quantity > 1 ? `x ${item.quantity}` : ''}</span></div></td>
                     <td>৳ ${product.price}</td>
-                    <td>
-                        <button class="remove-btn" onclick="removeFromCart(${product.id})">&times;</button>
-                    </td>
-                </tr>
-            `;
+                    <td><button class="remove-btn" onclick="removeFromCart(${product.id})">&times;</button></td>
+                </tr>`;
         }
     });
-
-    if (totalPriceElement) {
-        totalPriceElement.innerText = `৳ ${grandTotal}`;
-    }
+    if (totalPriceElement) totalPriceElement.innerText = `৳ ${grandTotal}`;
 }
-
-// পেজ লোড হলেই কার্ট এবং কাউন্টার রানিং করার জন্য
-document.addEventListener("DOMContentLoaded", () => {
-    updateCartCount();
-    displayCart();
-});
 
 let totalOrderPrice = 0;
 
-// চেকাউট পেজে অর্ডারের সঠিক আইটেম এবং হিসাব দেখানোর ফাংশন
+// চেকাউট পেজ সামারি
 function displayCheckoutSummary() {
     const summaryContainer = document.getElementById('checkout-summary-items');
     const totalElement = document.getElementById('checkout-total-price');
-    const walletDisplay = document.getElementById('wallet-balance');
-
     if (!summaryContainer) return;
-
     summaryContainer.innerHTML = "";
     let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
     totalOrderPrice = 0;
-
-    if (cartItems.length === 0) {
-        summaryContainer.innerHTML = '<p style="color:rgba(255,255,255,0.4);">No items in cart.</p>';
-        if (totalElement) totalElement.innerText = '৳ ০';
-        return;
-    }
-
     cartItems.forEach(item => {
         const product = products.find(p => p.id === item.id);
-
         if (product) {
-            let itemTotal = product.price * item.quantity;
-            totalOrderPrice += itemTotal;
-
-            summaryContainer.innerHTML += `
-                <div class="summary-item">
-                    <span>${product.name} (x${item.quantity})</span>
-                    <span>৳ ${itemTotal.toLocaleString()}</span>
-                </div>
-            `;
+            totalOrderPrice += (product.price * item.quantity);
+            summaryContainer.innerHTML += `<div class="summary-item"><span>${product.name} (x${item.quantity})</span><span>৳ ${(product.price * item.quantity).toLocaleString()}</span></div>`;
         }
     });
-
     if (totalElement) totalElement.innerText = `৳ ${totalOrderPrice.toLocaleString()}`;
-
-    if (walletDisplay) {
-        let currentBal = parseFloat(localStorage.getItem('skysion_wallet')) || 0;
-        walletDisplay.innerText = `৳ ${currentBal.toLocaleString()}`;
-    }
 }
 
-// ৫. অর্ডার প্লেস মেথড (Firebase Firestore রিয়েল-টাইম ডাটাবেজ ইন্টিগ্রেশন)
+// ৫. ফাইনাল অর্ডার প্লেস (Google Sheets)
 async function placeOrder(method) {
-    let currentBal = parseFloat(localStorage.getItem('skysion_wallet')) || 0;
     let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    if (cartItems.length === 0) { alert('❌ Your cart is empty!'); return; }
 
-    if (cartItems.length === 0) {
-        alert('❌ Your cart is empty!');
-        return;
-    }
-
-    // 🔽 HTML ফর্ম থেকে কাস্টমারের ইনফরমেশন রিড করা হচ্ছে
     const firstName = document.getElementById('cust-first-name')?.value || "";
-    const lastName = document.getElementById('cust-last-name')?.value || "";
     const customerPhone = document.getElementById('cust-phone')?.value || "";
     const customerAddress = document.getElementById('cust-address')?.value || "";
 
-    let pNumber = "";
-    let tId = "";
-
-    // বিকাশ বা নগদ সিলেক্ট করা থাকলে এক্সট্রা ভ্যালু চেক করা
-    if (method === 'bkash' || method === 'nagad') {
-        pNumber = document.getElementById('payment-number')?.value.trim() || "";
-        tId = document.getElementById('trx-id')?.value.trim() || "";
-
-        if (!pNumber || !tId) {
-            alert('❌ দয়া করে আপনার পেমেন্ট নাম্বার এবং Transaction ID দিন!');
-            return;
-        }
-    }
-
-    if (method === 'wallet' && currentBal < totalOrderPrice) {
-        alert('❌ Insufficient Wallet Balance!');
-        return;
-    }
-
     const orderId = "SK-" + Math.floor(100000 + Math.random() * 900000);
-    const orderDate = new Date().toLocaleDateString('bn-BD');
-
-    // পেমেন্ট মেথড নাম সুন্দর করে সাজানো
-    let paymentText = "Cash on Delivery";
-    if (method === 'wallet') paymentText = "Skysion Wallet";
-    if (method === 'bkash') paymentText = "bKash (Manual)";
-    if (method === 'nagad') paymentText = "Nagad (Manual)";
-
-    const firebaseOrderData = {
+    const orderData = {
         orderId: orderId,
-        date: orderDate,
-        customerName: `${firstName} ${lastName}`.trim(),
+        date: new Date().toLocaleDateString(),
+        customerName: firstName,
         phone: customerPhone,
         address: customerAddress,
         totalPrice: totalOrderPrice,
-        paymentMethod: paymentText,
-        senderNumber: pNumber,
-        transactionId: tId,
-        status: 'Pending',
+        paymentMethod: method,
         items: cartItems.map(item => {
             const product = products.find(p => p.id === item.id);
-            return {
-                name: product ? product.name : 'Unknown Product',
-                quantity: item.quantity,
-                price: product ? product.price : 0
-            };
-        })
+            return `${product ? product.name : 'Unknown'} (x${item.quantity})`;
+        }).join(", ")
     };
 
     try {
-        // 🚀 ফায়ারস্টোরের 'orders' কালেকশনে ডেটা পাঠানো হচ্ছে
-        await addDoc(collection(db, "orders"), firebaseOrderData);
-
-        // কাস্টমারের ব্রাউজারে হিস্ট্রি সেভ করা
-        let myOrders = JSON.parse(localStorage.getItem('my_orders')) || [];
-        myOrders.unshift(firebaseOrderData);
-        localStorage.setItem('my_orders', JSON.stringify(myOrders));
-
-        if (method === 'wallet') {
-            localStorage.setItem('skysion_wallet', (currentBal - totalOrderPrice).toString());
-        }
-
-        alert('🎉 Order placed successfully and saved to Firebase!');
+        await fetch("https://script.google.com/macros/s/AKfycbzo59yoK8Xh8wEvIk2RL4Bz2uO2_ZOoE-Z6Dwp-vj26OcAm3m4XtNpLsfydifN0LDrt/exec", {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderData)
+        });
+        alert('🎉 অর্ডার সফল হয়েছে!');
         localStorage.removeItem('cart');
-        
-        // 🏠 সফলভাবে অর্ডার হলে সরাসরি হোম পেজে রিডাইরেক্ট হবে
         window.location.href = 'index.html';
-
     } catch (error) {
-        console.error("Firebase Error: ", error);
-        alert('❌ Firebase Database Connection error! Please try again.');
+        alert("সমস্যা হয়েছে, আবার চেষ্টা করুন।");
     }
 }
 
-// গ্লোবাল ফাংশন বাইন্ডিং (যাতে HTML বাটন ক্লিকের onclick খুঁজে পায়)
 window.placeOrder = placeOrder;
 window.addToCart = addToCart;
 window.removeFromCart = removeFromCart;
 
 document.addEventListener("DOMContentLoaded", () => {
+    updateCartCount();
+    displayCart();
     displayCheckoutSummary();
 });
