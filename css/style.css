@@ -142,21 +142,30 @@ footer {
 }
 
 /* মোবাইলের জন্য রেসপন্সিভ ও স্ক্রোল ফিক্স */
+/* মোবাইলের জন্য চূড়ান্ত রেসপন্সিভ ও স্ক্রোল ফিক্স */
 @media (max-width: 768px) {
-    body {
-        padding-top: 95px !important; /* নেভবার ফিক্সড থাকার কারণে মেইন কন্টেন্ট বা কার্ট যেন কেটে না যায় */
-        overflow-y: scroll !important; /* মোবাইলে স্ক্রোল জোরপূর্বক সচল করার জন্য */
-        -webkit-overflow-scrolling: touch; /* আইফোনে স্মুথ টাচ স্ক্রোলের জন্য */
+    html, body {
+        overflow-x: hidden !important;
+        overflow-y: scroll !important; /* স্ক্রোল যেন কোনোভাবেই বন্ধ না হতে পারে */
+        height: auto !important;
+        position: relative !important; /* ফিক্সড বা অন্য কোনো পজিশন স্ক্রোল লক করলে তা ভেঙে দেবে */
+        -webkit-overflow-scrolling: touch !important; /* আইফোনে মাখনের মতো স্ক্রোলের জন্য */
     }
     
-    /* মোবাইলে কার্সরের গ্লো লাইট বন্ধ, যেন এটা স্ক্রিন ব্লক করে স্ক্রোল আটকে না দেয় */
+    body {
+        padding-top: 95px !important; /* নেভবারের জন্য ওপর থেকে জায়গা ছাড়বে */
+    }
+    
+    /* মোবাইলে কার্সরের গ্লো লাইট একদম বন্ধ */
     .cursor-glow {
         display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
     }
     
-    /* মোবাইলে নেভবার বা মেনু একটিভ থাকলে তার ভেতরের স্ক্রোলিং */
+    /* মোবাইলে নেভবার মেনু ওপেন থাকলেও যেন বডি স্ক্রোল করা যায় */
     .nav-menu.active {
-        overflow-y: auto;
-        max-height: 80vh; 
+        overflow-y: auto !important;
+        max-height: 70vh !important; 
     }
 }
