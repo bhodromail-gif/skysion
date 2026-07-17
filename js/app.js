@@ -1,8 +1,8 @@
-// 🌟 ফায়ারবেস SDK এবং ফায়ারস্টোর লোড ও কনফিগারেশন
+// 🌟 ফায়ারবেস SDK এবং ফায়ারস্টোর লোড ও কনফিগারেশন
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// তোমার রিয়েল ফায়ারবেস কনফিগারেশন 👇
+// তোমার রিয়েল ফায়ারবেস কনফিগারেশন 👇
 const firebaseConfig = {
     apiKey: "AIzaSyDWljpSviJczy_4v6OmAPXCF34eQXv95CA",
     authDomain: "skysion-shop.firebaseapp.com",
@@ -13,7 +13,7 @@ const firebaseConfig = {
     measurementId: "G-Q6832B2YQ9"
 };
 
-// ফায়ারবেস ও ফায়ারস্টোর ইনিশিয়ালাইজেশন
+// ফায়ারবেস ও ফায়ারস্টোর ইনিশিয়ালাইজেশন
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -172,6 +172,26 @@ async function placeOrder(method) {
         return;
     }
 
+    // 🔽 HTML ফর্ম থেকে কাস্টমারের ইনফরমেশন রিড করা হচ্ছে
+    const firstName = document.getElementById('cust-first-name')?.value || "";
+    const lastName = document.getElementById('cust-last-name')?.value || "";
+    const customerPhone = document.getElementById('cust-phone')?.value || "";
+    const customerAddress = document.getElementById('cust-address')?.value || "";
+
+    let pNumber = "";
+    let tId = "";
+
+    // বিকাশ বা নগদ সিলেক্ট করা থাকলে এক্সট্রা ভ্যালু চেক করা
+    if (method === 'bkash' || method === 'nagad') {
+        pNumber = document.getElementById('payment-number')?.value.trim() || "";
+        tId = document.getElementById('trx-id')?.value.trim() || "";
+
+        if (!pNumber || !tId) {
+            alert('❌ দয়া করে আপনার পেমেন্ট নাম্বার এবং Transaction ID দিন!');
+            return;
+        }
+    }
+
     if (method === 'wallet' && currentBal < totalOrderPrice) {
         alert('❌ Insufficient Wallet Balance!');
         return;
@@ -180,11 +200,22 @@ async function placeOrder(method) {
     const orderId = "SK-" + Math.floor(100000 + Math.random() * 900000);
     const orderDate = new Date().toLocaleDateString('bn-BD');
 
+    // পেমেন্ট মেথড নাম সুন্দর করে সাজানো
+    let paymentText = "Cash on Delivery";
+    if (method === 'wallet') paymentText = "Skysion Wallet";
+    if (method === 'bkash') paymentText = "bKash (Manual)";
+    if (method === 'nagad') paymentText = "Nagad (Manual)";
+
     const firebaseOrderData = {
         orderId: orderId,
         date: orderDate,
+        customerName: `${firstName} ${lastName}`.trim(),
+        phone: customerPhone,
+        address: customerAddress,
         totalPrice: totalOrderPrice,
-        paymentMethod: method === 'wallet' ? 'Skysion Wallet' : 'Cash on Delivery',
+        paymentMethod: paymentText,
+        senderNumber: pNumber,
+        transactionId: tId,
         status: 'Pending',
         items: cartItems.map(item => {
             const product = products.find(p => p.id === item.id);
@@ -197,19 +228,12 @@ async function placeOrder(method) {
     };
 
     try {
-        // 🚀 ফায়ারস্টোরের 'orders' কালেকশনে ডেটা পাঠানো হচ্ছে
+        // 🚀 ফায়ারস্টোরের 'orders' কালেকশনে ডেটা পাঠানো হচ্ছে
         await addDoc(collection(db, "orders"), firebaseOrderData);
 
         // কাস্টমারের ব্রাউজারে হিস্ট্রি সেভ করা
         let myOrders = JSON.parse(localStorage.getItem('my_orders')) || [];
-        myOrders.unshift({
-            orderId: orderId,
-            date: orderDate,
-            total: totalOrderPrice,
-            payment: firebaseOrderData.paymentMethod,
-            status: 'Pending',
-            items: firebaseOrderData.items
-        });
+        myOrders.unshift(firebaseOrderData);
         localStorage.setItem('my_orders', JSON.stringify(myOrders));
 
         if (method === 'wallet') {
@@ -218,7 +242,9 @@ async function placeOrder(method) {
 
         alert('🎉 Order placed successfully and saved to Firebase!');
         localStorage.removeItem('cart');
-        window.location.href = 'orders.html';
+        
+        // 🏠 সফলভাবে অর্ডার হলে সরাসরি হোম পেজে রিডাইরেক্ট হবে
+        window.location.href = 'index.html';
 
     } catch (error) {
         console.error("Firebase Error: ", error);
@@ -226,9 +252,11 @@ async function placeOrder(method) {
     }
 }
 
-// গ্লোবাল ফাংশন বাইন্ডিং (যাতে HTML বাটন ক্লিকের onclick খুঁজে পায়)
+// গ্লোবাল ফাংশন বাইন্ডিং (যাতে HTML বাটন ক্লিকের onclick খুঁজে পায়)
 window.placeOrder = placeOrder;
 window.addToCart = addToCart;
 window.removeFromCart = removeFromCart;
 
-document.addEventListener("DOMContentLoaded", displayCheckoutSummary);
+document.addEventListener("DOMContentLoaded", () => {
+    displayCheckoutSummary();
+});
