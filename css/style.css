@@ -5,16 +5,18 @@
     box-sizing: border-box;
 }
 
-html, body {
-    overflow-x: hidden; /* ডানে-বামে স্ক্রোল হওয়া বন্ধ করবে */
-    overflow-y: auto;   /* ওপর-নিচে স্ক্রোল সচল করবে */
-    height: auto;
+html {
+    overflow-x: hidden;
+    overflow-y: scroll; /* ব্রাউজারকে বাধ্য করবে ওপর-নিচে স্ক্রোল সচল রাখতে */
+    height: 100%;
 }
 
 body {
     background-color: #0b0203; /* ডার্ক চেরি-ব্ল্যাক মিক্স */
     color: #ffffff;
     font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100%; /* height: auto এর বদলে মোবাইলের জন্য এটি নিরাপদ */
+    position: relative;
 }
 
 /* কমন হেডার ও নেভিগেশন বার */
@@ -45,7 +47,7 @@ body {
 }
 
 #nav-logo {
-    height: 45px; /* লোগো বড়-ছোট করতে চাইলে এই পিক্সেল কম-বেশি করবে */
+    height: 45px; /* লোগো বড়-ছোট করতে চাইলে এই পিক্সেল কম-বেশি করবে */
     width: auto;
     object-fit: contain;
     transition: transform 0.3s ease;
@@ -123,10 +125,10 @@ body {
     height: 350px;
     background: radial-gradient(circle, rgba(209, 46, 67, 0.15) 0%, rgba(88, 17, 26, 0.05) 50%, transparent 100%);
     border-radius: 50%;
-    pointer-events: none; /* যাতে মাউস ক্লিক বা বাটনে বাধা না দেয় */
+    pointer-events: none;
     transform: translate(-50%, -50%);
-    z-index: -1; /* এটা সব লেখার পেছনে ব্যাকগ্রাউন্ডে থাকবে */
-    transition: transform 0.05s linear; /* মাউসের সাথে স্মুথ মুভমেন্টের জন্য */
+    z-index: -1;
+    transition: transform 0.05s linear;
     mix-blend-mode: screen;
 }
 
@@ -141,31 +143,53 @@ footer {
     letter-spacing: 2px;
 }
 
-/* মোবাইলের জন্য রেসপন্সিভ ও স্ক্রোল ফিক্স */
-/* মোবাইলের জন্য চূড়ান্ত রেসপন্সিভ ও স্ক্রোল ফিক্স */
+/* মোবাইলের জন্য চূড়ান্ত রেসপন্সিভ ও স্ক্রোল ফিক্স */
 @media (max-width: 768px) {
     html, body {
         overflow-x: hidden !important;
-        overflow-y: scroll !important; /* স্ক্রোল যেন কোনোভাবেই বন্ধ না হতে পারে */
-        height: auto !important;
-        position: relative !important; /* ফিক্সড বা অন্য কোনো পজিশন স্ক্রোল লক করলে তা ভেঙে দেবে */
-        -webkit-overflow-scrolling: touch !important; /* আইফোনে মাখনের মতো স্ক্রোলের জন্য */
+        overflow-y: scroll !important; /* জোর করে ওপরে-নিচে স্ক্রোল অন রাখবে */
+        height: auto !important; /* মোবাইলের ফ্রিজ হওয়া দূর করবে */
+        -webkit-overflow-scrolling: touch !important; /* আইফোনে স্মুথ টাচ স্ক্রোলের জন্য */
     }
     
     body {
-        padding-top: 95px !important; /* নেভবারের জন্য ওপর থেকে জায়গা ছাড়বে */
+        padding-top: 140px !important; /* মোবাইলে নেভবার বড় হবে, তাই ওপর থেকে বেশি জায়গা ছাড়া হলো */
     }
     
-    /* মোবাইলে কার্সরের গ্লো লাইট একদম বন্ধ */
+    /* মোবাইলে কার্সরের গ্লো লাইট একদম বন্ধ, এটি স্ক্রিনকে ব্লক করত */
     .cursor-glow {
         display: none !important;
         visibility: hidden !important;
-        pointer-events: none !important;
     }
-    
-    /* মোবাইলে নেভবার মেনু ওপেন থাকলেও যেন বডি স্ক্রোল করা যায় */
-    .nav-menu.active {
-        overflow-y: auto !important;
-        max-height: 70vh !important; 
+
+    /* মোবাইলে পুরো নেভবার ফ্লেক্স ওপর-নিচে হবে যেন কার্ট স্ক্রিনের বাইরে না যায় */
+    .navbar {
+        flex-direction: column; 
+        gap: 12px;
+        padding: 15px 4%;
+    }
+
+    /* লিংকগুলো পাশাপাশি না বসে একটার নিচে আরেকটা সুন্দর লাইনে বসবে */
+    .nav-links {
+        display: flex;
+        flex-direction: row; /* ছোট করে পাশাপাশি রাখবে */
+        flex-wrap: wrap; /* জায়গা না হলে পরের লাইনে পাঠাবে */
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .nav-links li {
+        margin: 0 5px !important; /* মার্জিন কমিয়ে আনা হলো */
+    }
+
+    /* কার্ট এবং একাউন্ট আইকনগুলো যেন মাঝে সুন্দরভাবে দেখায় */
+    .nav-icons {
+        display: flex;
+        justify-content: center;
+        margin-top: 5px;
+    }
+
+    .nav-icons a {
+        margin: 0 10px !important; /* আইকনগুলোর স্পেসিং ঠিক করা হলো */
     }
 }
