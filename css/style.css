@@ -5,11 +5,16 @@
     box-sizing: border-box;
 }
 
+html, body {
+    overflow-x: hidden; /* ডানে-বামে স্ক্রোল হওয়া বন্ধ করবে */
+    overflow-y: auto;   /* ওপর-নিচে স্ক্রোল সচল করবে */
+    height: auto;
+}
+
 body {
     background-color: #0b0203; /* ডার্ক চেরি-ব্ল্যাক মিক্স */
     color: #ffffff;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    overflow-x: hidden;
 }
 
 /* কমন হেডার ও নেভিগেশন বার */
@@ -35,6 +40,19 @@ body {
     letter-spacing: 6px;
     color: #ffffff;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+#nav-logo {
+    height: 45px; /* লোগো বড়-ছোট করতে চাইলে এই পিক্সেল কম-বেশি করবে */
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+#nav-logo:hover {
+    transform: scale(1.05);
 }
 
 .nav-links {
@@ -56,7 +74,7 @@ body {
 }
 
 .nav-links a:hover, .nav-links a.active {
-    color: #d12e43; /* গ্লোয়িং চেরি রেড */
+    color: #d12e43; /* গ্লোয়িং চেরি রেড */
 }
 
 .nav-icons a {
@@ -98,6 +116,20 @@ body {
     pointer-events: none;
 }
 
+/* কার্সরের গ্লো লাইট ইফেক্ট */
+.cursor-glow {
+    position: fixed;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(209, 46, 67, 0.15) 0%, rgba(88, 17, 26, 0.05) 50%, transparent 100%);
+    border-radius: 50%;
+    pointer-events: none; /* যাতে মাউস ক্লিক বা বাটনে বাধা না দেয় */
+    transform: translate(-50%, -50%);
+    z-index: -1; /* এটা সব লেখার পেছনে ব্যাকগ্রাউন্ডে থাকবে */
+    transition: transform 0.05s linear; /* মাউসের সাথে স্মুথ মুভমেন্টের জন্য */
+    mix-blend-mode: screen;
+}
+
 /* কমন ফুটার */
 footer {
     padding: 60px 6% 30px 6%;
@@ -108,31 +140,23 @@ footer {
     color: rgba(255, 255, 255, 0.4);
     letter-spacing: 2px;
 }
-.logo a {
-    display: flex;
-    align-items: center;
-}
 
-#nav-logo {
-    height: 45px; /* লোগো বড়-ছোট করতে চাইলে এই পিক্সেল কম-বেশি করবে */
-    width: auto;
-    object-fit: contain;
-    transition: transform 0.3s ease;
-}
-
-#nav-logo:hover {
-    transform: scale(1.05);
-}
-/* কার্সরের গ্লো লাইট ইফেক্ট */
-.cursor-glow {
-  position: fixed;
-  width: 350px;
-  height: 350px;
-  background: radial-gradient(circle, rgba(209, 46, 67, 0.15) 0%, rgba(88, 17, 26, 0.05) 50%, transparent 100%);
-  border-radius: 50%;
-  pointer-events: none; /* যাতে মাউস ক্লিক বা বাটনে বাধা না দেয় */
-  transform: translate(-50%, -50%);
-  z-index: -1; /* এটা সব লেখার পেছনে ব্যাকগ্রাউন্ডে থাকবে */
-  transition: transform 0.05s linear; /* মাউসের সাথে স্মুথ মুভমেন্টের জন্য */
-  mix-blend-mode: screen;
+/* মোবাইলের জন্য রেসপন্সিভ ও স্ক্রোল ফিক্স */
+@media (max-width: 768px) {
+    body {
+        padding-top: 95px !important; /* নেভবার ফিক্সড থাকার কারণে মেইন কন্টেন্ট বা কার্ট যেন কেটে না যায় */
+        overflow-y: scroll !important; /* মোবাইলে স্ক্রোল জোরপূর্বক সচল করার জন্য */
+        -webkit-overflow-scrolling: touch; /* আইফোনে স্মুথ টাচ স্ক্রোলের জন্য */
+    }
+    
+    /* মোবাইলে কার্সরের গ্লো লাইট বন্ধ, যেন এটা স্ক্রিন ব্লক করে স্ক্রোল আটকে না দেয় */
+    .cursor-glow {
+        display: none !important;
+    }
+    
+    /* মোবাইলে নেভবার বা মেনু একটিভ থাকলে তার ভেতরের স্ক্রোলিং */
+    .nav-menu.active {
+        overflow-y: auto;
+        max-height: 80vh; 
+    }
 }

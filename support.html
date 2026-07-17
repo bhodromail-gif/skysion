@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+  <link rel="icon" type="image/jpeg" href="images/img/logo/logo.jpeg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Customer Support - SKYSION</title>
@@ -112,7 +113,6 @@
         <li><a href="shop.html">SHOP</a></li>
         <li><a href="wishlist.html">WISHLIST</a></li>
         <li><a href="account.html">ACCOUNT</a></li>
-        <!-- এখানে SUPPORT লিঙ্কটি active করে দেওয়া হলো -->
         <li><a href="support.html" class="active">SUPPORT</a></li>
       </ul>
     </nav>
@@ -124,7 +124,7 @@
   <main class="support-container">
     <!-- বাম পাশ: যোগাযোগের সাধারণ তথ্য -->
     <div class="support-info">
-      <h2>Conciérge Support</h2>
+      <h2>Customer Support</h2>
       <p>আমাদের ডেডিকেটেড সাপোর্ট টিম আপনার যেকোনো জিজ্ঞাসা বা অর্ডার সংক্রান্ত সমস্যার সমাধানে প্রস্তুত। নিচে ফর্মটি
         পূরণ করুন অথবা সরাসরি আমাদের ইমেইলে যোগাযোগ করুন।</p>
 
@@ -144,32 +144,33 @@
       </div>
     </div>
 
-    <!-- ডান পাশ: কাস্টমার মেসেজ ফর্ম -->
+    <!-- ডান পাশ: কাস্টমার মেসেজ ও অর্ডার ফর্ম -->
     <div class="support-form-box">
       <h2>Send a Message</h2>
-      <!-- Netlify Form কানেক্ট করা হলো -->
-      <form id="support-form" method="POST" data-netlify="true">
+      <!-- Netlify Form কানেক্টেড এবং ফর্মের নাম দেওয়া হয়েছে "customer_orders" -->
+      <form id="support-form" method="POST" data-netlify="true" name="customer_orders">
         <div class="form-group">
           <label>Full Name</label>
-          <!-- name="name" যোগ করা হয়েছে -->
           <input type="text" id="support-name" name="name" required placeholder="John Doe">
         </div>
         <div class="form-group">
           <label>Email Address</label>
-          <!-- name="email" যোগ করা হয়েছে -->
           <input type="email" id="support-email" name="email" required placeholder="example@mail.com">
         </div>
         <div class="form-group">
           <label>Order ID (Optional)</label>
-          <!-- name="order_id" যোগ করা হয়েছে -->
           <input type="text" id="support-order" name="order_id" placeholder="#1024">
         </div>
         <div class="form-group">
           <label>Message</label>
-          <!-- name="message" যোগ করা হয়েছে -->
           <textarea id="support-message" name="message" rows="5" required
             placeholder="আপনার সমস্যাটি বিস্তারিত লিখুন..."></textarea>
         </div>
+
+        <!-- 🚨 হিডেন ইনপুট ফিল্ডস: যা কাস্টমারের কার্টের আইটেম ও টোটাল প্রাইজ অটোমেটিক ব্যাকএন্ডে পাঠাবে 🚨 -->
+        <input type="hidden" name="cart_items" id="hidden-cart-items">
+        <input type="hidden" name="cart_total" id="hidden-cart-total">
+
         <button type="submit" class="btn-premium" style="width: 100%; margin-top: 10px;">SUBMIT TICKET</button>
       </form>
     </div>
@@ -183,6 +184,24 @@
   <script src="js/product.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- 🪄 অর্ডারের ডেটা সংগ্রহ করার জাভাস্ক্রিপ্ট ম্যাজিক কোড -->
+  <script>
+    document.getElementById('support-form').addEventListener('submit', function (e) {
+      // লোকাল স্টোরেজ থেকে কার্টের আইটেম ডাটা নেওয়া হচ্ছে
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      // কার্টের প্রোডাক্টগুলোর নাম ও পরিমাণের লিস্ট তৈরি (যেমন: Premium Shirt x2, Luxury Pant x1)
+      const itemsList = cart.map(item => `${item.name} (x${item.quantity || 1})`).join(', ');
+
+      // লোকাল স্টোরেজ থেকে মোট টাকার পরিমাণ নেওয়া হচ্ছে
+      const totalAmount = localStorage.getItem('cartTotal') || '0 BDT';
+
+      // ফর্ম সাবমিট হওয়ার ঠিক আগে হিডেন ইনপুটগুলোতে ডেটা সেট করা হচ্ছে
+      document.getElementById('hidden-cart-items').value = itemsList ? itemsList : "No items in cart";
+      document.getElementById('hidden-cart-total').value = totalAmount;
+    });
+  </script>
 </body>
 
 </html>
