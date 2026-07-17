@@ -1,85 +1,234 @@
-// লোকাল স্টোরেজ থেকে উইশলিস্টের ডাটা গেট করা
-let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+// 🌟 ফায়ারবেস SDK এবং ফায়ারস্টোর লোড ও কনফিগারেশন
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ১. উইশলিস্টে প্রোডাক্ট অ্যাড করার ফাংশন (শপ পেজের জন্য)
-function addToWishlist(productId) {
-    if (!wishlist.includes(productId)) {
-        wishlist.push(productId);
-        localStorage.setItem('wishlist', JSON.stringify(wishlist));
-        alert("প্রোডাক্টটি উইশলিস্টে যোগ করা হয়েছে!");
-    } else {
-        alert("প্রোডাক্টটি ইতিমধ্যেই উইশলিস্টে আছে!");
-    }
-}
+// তোমার রিয়েল ফায়ারবেস কনফিগারেশন 👇
+const firebaseConfig = {
+    apiKey: "AIzaSyDWljpSviJczy_4v6OmAPXCF34eQXv95CA",
+    authDomain: "skysion-shop.firebaseapp.com",
+    projectId: "skysion-shop",
+    storageBucket: "skysion-shop.firebasestorage.app",
+    messagingSenderId: "849058892138",
+    appId: "1:849058892138:web:7ee33dfd8619d0e5ebfd13",
+    measurementId: "G-Q6832B2YQ9"
+};
 
-// ২. উইশলিস্ট থেকে প্রোডাক্ট রিমুভ করার ফাংশন (উইশলিস্ট পেজের জন্য)
-function removeFromWishlist(productId) {
-    wishlist = wishlist.filter(id => id !== productId);
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
-    displayWishlist(); // উইশলিস্ট পেজ রি-রেন্ডার করা
-}
+// ফায়ারবেস ও ফায়ারস্টোর ইনিশিয়ালাইজেশন
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-// ৩. উইশলিস্ট পেজে প্রোডাক্টগুলো দেখানোর ফাংশন
-function displayWishlist() {
-    const wishlistContainer = document.getElementById('wishlist-items-container');
-    if (!wishlistContainer) return; // যদি উইশলিস্ট পেজে না থাকে, তবে কোড এখানেই থেমে যাবে
+// লোকাল স্টোরেজ থেকে কার্টের ডাটা গেট করা
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-    wishlistContainer.innerHTML = "";
-
-    if (wishlist.length === 0) {
-        wishlistContainer.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.5); width:100%;">Your wishlist is empty.</p>`;
+// ১. কার্টে প্রোডাক্ট অ্যাড করার ফাংশন
+function addToCart(productId) {
+    const product = products.find(p => p.id === productId);
+    
+    if (!product) {
+        console.error("Product not found!");
         return;
     }
 
-    wishlist.forEach(productId => {
-        // product.js এর products অ্যারে থেকে প্রোডাক্ট খুঁজে বের করা
-        const product = products.find(p => p.id === productId);
+    const cartItem = cart.find(item => item.id === productId);
+
+    if (cartItem) {
+        cartItem.quantity += 1;
+    } else {
+        cart.push({
+            id: product.id,
+            quantity: 1
+        });
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    
+    alert(`${product.name} কার্টে যোগ করা হয়েছে!`);
+    
+    if (document.getElementById('cart-items-body')) {
+        displayCart();
+    }
+}
+
+// ২. কার্ট থেকে প্রোডাক্ট রিমুভ করার ফাংশন
+function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    displayCart();
+    updateCartCount();
+}
+
+// ৩. হেডার বা নেভিগেশন বারে কার্টের টোটাল সংখ্যা (Count) দেখানোর ফাংশন
+function updateCartCount() {
+    const cartCountElement = document.getElementById('cart-count');
+    if (cartCountElement) {
+        let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCountElement.innerText = totalItems;
+    }
+}
+
+// ৪. কার্ট পেজে প্রোডাক্টের টেবিল ও টোটাল প্রাইস রেন্ডার করার ফাংশন
+function displayCart() {
+    const cartBody = document.getElementById('cart-items-body');
+    const totalPriceElement = document.getElementById('cart-total-price');
+    
+    if (!cartBody) return;
+
+    cartBody.innerHTML = "";
+    let grandTotal = 0;
+
+    if (cart.length === 0) {
+        cartBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:rgba(255,255,255,0.4); padding: 40px 0;">Your cart is empty.</td></tr>`;
+        if (totalPriceElement) totalPriceElement.innerText = "৳ ০";
+        return;
+    }
+
+    cart.forEach(item => {
+        const product = products.find(p => p.id === item.id);
 
         if (product) {
-            wishlistContainer.innerHTML += `
-                <div class="wishlist-card">
-                    <button class="remove-wishlist" onclick="removeFromWishlist(${product.id})">&times;</button>
-                    <div class="img-container">
-                        <img src="${product.image}" alt="${product.name}">
-                    </div>
-                    <h3>${product.name}</h3>
-                    <p class="price">৳ ${product.price}</p>
-                    <button class="btn-premium" onclick="addToCart(${product.id})">ADD TO CART</button>
+            let itemTotal = product.price * item.quantity;
+            grandTotal += itemTotal;
+
+            cartBody.innerHTML += `
+                <tr>
+                    <td>
+                        <div class="cart-product-info">
+                            <img src="${product.image}" alt="${product.name}">
+                            <span>${product.name} ${item.quantity > 1 ? `x ${item.quantity}` : ''}</span>
+                        </div>
+                    </td>
+                    <td>৳ ${product.price}</td>
+                    <td>
+                        <button class="remove-btn" onclick="removeFromCart(${product.id})">&times;</button>
+                    </td>
+                </tr>
+            `;
+        }
+    });
+
+    if (totalPriceElement) {
+        totalPriceElement.innerText = `৳ ${grandTotal}`;
+    }
+}
+
+// পেজ লোড হলেই কার্ট এবং কাউন্টার রানিং করার জন্য
+document.addEventListener("DOMContentLoaded", () => {
+    updateCartCount();
+    displayCart();
+});
+
+let totalOrderPrice = 0;
+
+// চেকাউট পেজে অর্ডারের সঠিক আইটেম এবং হিসাব দেখানোর ফাংশন
+function displayCheckoutSummary() {
+    const summaryContainer = document.getElementById('checkout-summary-items');
+    const totalElement = document.getElementById('checkout-total-price');
+    const walletDisplay = document.getElementById('wallet-balance');
+
+    if (!summaryContainer) return;
+
+    summaryContainer.innerHTML = "";
+    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    totalOrderPrice = 0;
+
+    if (cartItems.length === 0) {
+        summaryContainer.innerHTML = '<p style="color:rgba(255,255,255,0.4);">No items in cart.</p>';
+        if (totalElement) totalElement.innerText = '৳ ০';
+        return;
+    }
+
+    cartItems.forEach(item => {
+        const product = products.find(p => p.id === item.id);
+
+        if (product) {
+            let itemTotal = product.price * item.quantity;
+            totalOrderPrice += itemTotal;
+
+            summaryContainer.innerHTML += `
+                <div class="summary-item">
+                    <span>${product.name} (x${item.quantity})</span>
+                    <span>৳ ${itemTotal.toLocaleString()}</span>
                 </div>
             `;
         }
     });
+
+    if (totalElement) totalElement.innerText = `৳ ${totalOrderPrice.toLocaleString()}`;
+
+    if (walletDisplay) {
+        let currentBal = parseFloat(localStorage.getItem('skysion_wallet')) || 0;
+        walletDisplay.innerText = `৳ ${currentBal.toLocaleString()}`;
+    }
 }
 
-// পেজ লোড হলে উইশলিস্ট দেখানোর জন্য
-document.addEventListener("DOMContentLoaded", displayWishlist);
-// মাউসের সাথে লাইট মুভ করার ম্যাজিক কোড
-document.addEventListener("DOMContentLoaded", () => {
-  // ১. স্ক্রিনে গ্লো লাইটের জন্য একটা নতুন উপাদান তৈরি করা
-  const glowLight = document.createElement("div");
-  glowLight.classList.add("cursor-glow");
-  document.body.appendChild(glowLight);
+// ৫. অর্ডার প্লেস মেথড (Firebase Firestore রিয়েল-টাইম ডাটাবেজ ইন্টিগ্রেশন)
+async function placeOrder(method) {
+    let currentBal = parseFloat(localStorage.getItem('skysion_wallet')) || 0;
+    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
 
-  // ২. মাউস যেখানে যাবে, লাইটের পজিশন সেখানে সেট করা
-  document.addEventListener("mousemove", (e) => {
-    glowLight.style.left = e.clientX + "px";
-    glowLight.style.top = e.clientY + "px";
-  });
-});
-// সাপোর্ট ফর্ম হ্যান্ডেল করার কোড
-const supportForm = document.getElementById('support-form');
-if (supportForm) {
-    supportForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const name = document.getElementById('support-name').value;
-        const email = document.getElementById('support-email').value;
-        const message = document.getElementById('support-message').value;
+    if (cartItems.length === 0) {
+        alert('❌ Your cart is empty!');
+        return;
+    }
 
-        // সাময়িকভাবে একটি সফল অ্যালার্ট দেখানো হচ্ছে
-        alert(`Thank you, ${name}! Your support ticket has been received. We will get back to you at ${email} shortly.`);
-        
-        // ফর্ম ক্লিয়ার করা
-        supportForm.reset();
-    });
+    if (method === 'wallet' && currentBal < totalOrderPrice) {
+        alert('❌ Insufficient Wallet Balance!');
+        return;
+    }
+
+    const orderId = "SK-" + Math.floor(100000 + Math.random() * 900000);
+    const orderDate = new Date().toLocaleDateString('bn-BD');
+
+    const firebaseOrderData = {
+        orderId: orderId,
+        date: orderDate,
+        totalPrice: totalOrderPrice,
+        paymentMethod: method === 'wallet' ? 'Skysion Wallet' : 'Cash on Delivery',
+        status: 'Pending',
+        items: cartItems.map(item => {
+            const product = products.find(p => p.id === item.id);
+            return {
+                name: product ? product.name : 'Unknown Product',
+                quantity: item.quantity,
+                price: product ? product.price : 0
+            };
+        })
+    };
+
+    try {
+        // 🚀 ফায়ারস্টোরের 'orders' কালেকশনে ডেটা পাঠানো হচ্ছে
+        await addDoc(collection(db, "orders"), firebaseOrderData);
+
+        // কাস্টমারের ব্রাউজারে হিস্ট্রি সেভ করা
+        let myOrders = JSON.parse(localStorage.getItem('my_orders')) || [];
+        myOrders.unshift({
+            orderId: orderId,
+            date: orderDate,
+            total: totalOrderPrice,
+            payment: firebaseOrderData.paymentMethod,
+            status: 'Pending',
+            items: firebaseOrderData.items
+        });
+        localStorage.setItem('my_orders', JSON.stringify(myOrders));
+
+        if (method === 'wallet') {
+            localStorage.setItem('skysion_wallet', (currentBal - totalOrderPrice).toString());
+        }
+
+        alert('🎉 Order placed successfully and saved to Firebase!');
+        localStorage.removeItem('cart');
+        window.location.href = 'orders.html';
+
+    } catch (error) {
+        console.error("Firebase Error: ", error);
+        alert('❌ Firebase Database Connection error! Please try again.');
+    }
 }
+
+// গ্লোবাল ফাংশন বাইন্ডিং (যাতে HTML বাটন ক্লিকের onclick খুঁজে পায়)
+window.placeOrder = placeOrder;
+window.addToCart = addToCart;
+window.removeFromCart = removeFromCart;
+
+document.addEventListener("DOMContentLoaded", displayCheckoutSummary);

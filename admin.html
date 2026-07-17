@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - SKYSION</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 40px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border: 1px solid #333;
+      text-align: left;
+    }
+
+    th {
+      background: #222;
+    }
+
+    select {
+      background: #333;
+      color: #fff;
+      padding: 5px;
+      border: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>😎 SKYSION ADMIN DASHBOARD (All Client Orders)</h2>
+  <div id="admin-orders">
+    <!-- এখানে লোকাল মেমোরির সব অর্ডার চলে আসবে -->
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById('admin-orders');
+      let allOrders = JSON.parse(localStorage.getItem('my_orders')) || [];
+
+      if (allOrders.length === 0) {
+        container.innerHTML = "<p>No orders placed yet.</p>";
+        return;
+      }
+
+      let tableHTML = `<table><tr><th>Order ID</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th></tr>`;
+
+      allOrders.forEach((order, index) => {
+        let itemsText = order.items.map(i => `${i.name} (${i.quantity})`).join(', ');
+        tableHTML += `
+                    <tr>
+                        <td>${order.orderId}</td>
+                        <td>${order.date}</td>
+                        <td>${itemsText}</td>
+                        <td>৳ ${order.total}</td>
+                        <td>
+                            <select onchange="updateStatus(${index}, this.value)">
+                                <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Processing" ${order.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                                <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
+      });
+      tableHTML += `</table>`;
+      container.innerHTML = tableHTML;
+    });
+
+    function updateStatus(index, newStatus) {
+      let allOrders = JSON.parse(localStorage.getItem('my_orders')) || [];
+      allOrders[index].status = newStatus;
+      localStorage.setItem('my_orders', JSON.stringify(allOrders));
+      alert("Order status updated to: " + newStatus);
+    }
+  </script>
+</body>
+
+</html>

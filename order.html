@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders - SKYSION</title>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #0b0203;
+      color: #fff;
+      padding: 40px 6%;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 15px;
+      color: #ffffff;
+      letter-spacing: 3px;
+    }
+
+    .order-card {
+      background: #120507;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(88, 17, 26, 0.3);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+    }
+
+    .status-pending {
+      color: #ffa502;
+      background: rgba(255, 165, 2, 0.1);
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    .item-details {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      margin: 8px 0 8px 10px;
+    }
+
+    .no-orders {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 50px;
+      font-size: 13px;
+      letter-spacing: 2px;
+    }
+
+    .btn-copy {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+
+    .btn-copy:hover {
+      background: #fff;
+      color: #000;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>📋 MY ORDERS</h2>
+    <div id="orders-list"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const ordersContainer = document.getElementById('orders-list');
+      let myOrders = JSON.parse(localStorage.getItem('my_orders')) || [];
+
+      if (myOrders.length === 0) {
+        ordersContainer.innerHTML = '<p class="no-orders">YOU HAVEN\'T PLACED ANY ORDERS YET.</p>';
+        return;
+      }
+
+      myOrders.forEach(order => {
+        let itemsHTML = '';
+        let textReceipt = `Order ID: ${order.orderId}\nTotal: ৳${order.total}\nItems:\n`;
+
+        order.items.forEach(item => {
+          itemsHTML += `<p class="item-details">• ${item.name} x ${item.quantity} - ৳ ${item.price * item.quantity}</p>`;
+          textReceipt += `- ${item.name} x${item.quantity}\n`;
+        });
+
+        ordersContainer.innerHTML += `
+                <div class="order-card">
+                    <div class="order-header">
+                        <span>ID: ${order.orderId}</span>
+                        <span class="status-pending">${order.status}</span>
+                    </div>
+                    <p style="margin: 5px 0; font-size: 12px; color: rgba(255,255,255,0.5);">Date: ${order.date} | Payment: ${order.payment}</p>
+                    <div style="margin-top: 15px;">${itemsHTML}</div>
+                    <hr style="border: 0; border-top: 1px solid rgba(88,17,26,0.2); margin: 15px 0;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <button class="btn-copy" onclick="navigator.clipboard.writeText(\`${textReceipt}\`); alert('অর্ডার রসিদ কপি হয়েছে! এটি পেজ বা ইনবক্সে পেস্ট করে দিন।\`)">Copy Order Receipt</button>
+                        <p style="margin: 0; font-weight: bold; color: #d12e43; font-size: 16px;">Total: ৳ ${order.total.toLocaleString()}</p>
+                    </div>
+                </div>
+            `;
+      });
+    });
+  </script>
+</body>
+
+</html>
