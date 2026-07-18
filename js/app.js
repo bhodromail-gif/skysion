@@ -80,24 +80,38 @@ function displayCheckoutSummary() {
     if (totalElement) totalElement.innerText = `৳ ${totalOrderPrice.toLocaleString()}`;
 }
 
-// ৫. ফাইনাল অর্ডার প্লেস (Google Sheets)
+// ৫. ফাইনাল অর্ডার প্লেস (Google Sheets Integrated + Login Check)
 async function placeOrder(method) {
+    // লগইন চেক লজিক
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (!isLoggedIn) {
+        alert('⚠️ অর্ডার করার জন্য দয়া করে আগে লগইন বা রেজিস্ট্রেশন করুন!');
+        window.location.href = 'account.html';
+        return; 
+    }
+
     let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
     if (cartItems.length === 0) { alert('❌ Your cart is empty!'); return; }
 
     const firstName = document.getElementById('cust-first-name')?.value || "";
+    const lastName = document.getElementById('cust-last-name')?.value || "";
     const customerPhone = document.getElementById('cust-phone')?.value || "";
     const customerAddress = document.getElementById('cust-address')?.value || "";
+    
+    const senderNumber = document.getElementById('payment-number')?.value || "N/A";
+    const transactionId = document.getElementById('trx-id')?.value || "N/A";
 
     const orderId = "SK-" + Math.floor(100000 + Math.random() * 900000);
     const orderData = {
         orderId: orderId,
         date: new Date().toLocaleDateString(),
-        customerName: firstName,
+        customerName: firstName + " " + lastName,
         phone: customerPhone,
         address: customerAddress,
         totalPrice: totalOrderPrice,
         paymentMethod: method,
+        senderNumber: senderNumber,
+        transactionId: transactionId,
         items: cartItems.map(item => {
             const product = products.find(p => p.id === item.id);
             return `${product ? product.name : 'Unknown'} (x${item.quantity})`;
@@ -105,17 +119,26 @@ async function placeOrder(method) {
     };
 
     try {
-        await fetch("https://script.google.com/macros/s/AKfycbzo59yoK8Xh8wEvIk2RL4Bz2uO2_ZOoE-Z6Dwp-vj26OcAm3m4XtNpLsfydifN0LDrt/exec", {
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwNnaYNC-Nl-R1jfb_VZUpXfnOqZ4zFetryclJG_vc0zHarou8ofRzjd0VU7F1cUiVu/exec";
+        
+        await fetch(GOOGLE_SCRIPT_URL, {
             method: "POST",
             mode: "no-cors",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(orderData)
         });
-        alert('🎉 অর্ডার সফল হয়েছে!');
+        
+        // অর্ডার ব্রাউজারে সেভ করা (যাতে orders.html এ দেখা যায়)
+        let myOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
+        myOrders.push(orderData);
+        localStorage.setItem('myOrders', JSON.stringify(myOrders));
+        
+        alert('🎉 অর্ডার সফল হয়েছে!');
         localStorage.removeItem('cart');
         window.location.href = 'index.html';
     } catch (error) {
-        alert("সমস্যা হয়েছে, আবার চেষ্টা করুন।");
+        console.error("Error:", error);
+        alert("সমস্যা হয়েছে, আবার চেষ্টা করুন।");
     }
 }
 
