@@ -42,7 +42,6 @@
       border-color: rgba(88, 17, 26, 0.5);
     }
 
-    /* ইমেজের সাইজ এবং স্টাইল ঠিক রাখার জন্য নতুন সিএসএস */
     .wishlist-card .img-container {
       height: 250px;
       background: #120507;
@@ -91,10 +90,7 @@
 <body>
 
   <header class="navbar">
-    <div class="logo">
-      <a href="index.html">
-        <img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo">
-      </a>
+    <div class="logo"><a href="index.html"><img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo"></a>
     </div>
     <nav>
       <ul class="nav-links">
@@ -105,17 +101,13 @@
         <li><a href="account.html">ACCOUNT</a></li>
       </ul>
     </nav>
-    <div class="nav-icons">
-      <a href="cart.html">CART (<span id="cart-count">0</span>)</a>
-    </div>
+    <div class="nav-icons"><a href="cart.html">CART (<span id="cart-count">0</span>)</a></div>
   </header>
 
   <div class="glow-bg" style="width: 400px; height: 400px; background: #58111a; top: 20%; left: -10%;"></div>
 
   <main class="wishlist-container">
     <h1 class="page-title">Your Wishlist</h1>
-
-    <!-- কন্টেইনার আইডি ঠিক রাখা হলো, ম্যানুয়াল কোডগুলো মুছে ফেলা হলো -->
     <div class="wishlist-grid" id="wishlist-items-container"></div>
   </main>
 
@@ -123,10 +115,20 @@
     <p>&copy; 2026 SKYSION MAISON. ALL RIGHTS RESERVED.</p>
   </footer>
 
-  <!-- জাভাস্ক্রিপ্ট ফাইলগুলোর সঠিক সিরিয়াল লিংক এখানে এড করা হলো -->
+  <!-- স্ক্রিপ্ট লিঙ্কগুলো সঠিকভাবে সাজানো হয়েছে -->
   <script src="js/product.js"></script>
   <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
   <script type="module" src="js/app.js"></script>
+
+  <script>
+    // নিশ্চিত করার জন্য যে DOM লোড হওয়ার পর উইশলিস্ট দেখাবে
+    document.addEventListener("DOMContentLoaded", () => {
+      if (typeof displayWishlist === 'function') {
+        displayWishlist();
+      }
+    });
+  </script>
 </body>
 
 </html>

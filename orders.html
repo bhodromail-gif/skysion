@@ -95,60 +95,60 @@
 
   <main class="orders-container">
     <h2>My Orders</h2>
-    <div id="my-orders-list"></div>
+    <div id="my-orders-list">Loading orders...</div>
   </main>
 
   <script src="js/product.js"></script>
   <script src="js/cart.js"></script>
 
   <script>
-    // অর্ডার স্ট্যাটাস আপডেট করার ফাংশন
-    function markAsDone(orderId) {
-      let myOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
-      myOrders = myOrders.map(order => {
-        if (order.orderId === orderId) {
-          order.status = "Done";
-        }
-        return order;
-      });
-      localStorage.setItem('myOrders', JSON.stringify(myOrders));
-      location.reload();
-    }
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNnaYNC-Nl-R1jfb_VZUpXfnOqZ4zFetryclJG_vc0zHarou8ofRzjd0VU7F1cUiVu/exec';
 
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
       const ordersListContainer = document.getElementById('my-orders-list');
       const urlParams = new URLSearchParams(window.location.search);
-      const isAdmin = urlParams.get('admin') === 'true'; // URL এ ?admin=true থাকলে বাটন দেখাবে
+      const isAdmin = urlParams.get('sharumywife') === 'true';
 
-      let myOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
+      try {
+        const response = await fetch(SCRIPT_URL);
+        const data = await response.json();
 
-      if (myOrders.length === 0) {
-        ordersListContainer.innerHTML = `<p style="color: rgba(255,255,255,0.4); text-align: center; padding: 50px 0;">You haven't placed any orders yet.</p>`;
-        return;
-      }
+        ordersListContainer.innerHTML = "";
 
-      ordersListContainer.innerHTML = "";
-      myOrders.forEach(order => {
-        ordersListContainer.innerHTML += `
-          <div class="order-card">
-            <div class="order-header">
-              <div>
-                <strong style="color: #fff;">Order ID: ${order.orderId}</strong>
-                <p style="font-size: 12px; color: rgba(255,255,255,0.4); margin: 5px 0 0 0;">Date: ${order.date}</p>
+        // প্রথম রো হেডার হলে slice(1) দিয়ে বাদ দেওয়া হয়েছে
+        data.slice(1).reverse().forEach((row) => {
+          const order = {
+            orderId: row[0],
+            date: row[1],
+            totalPrice: row[5],
+            paymentMethod: row[6],
+            items: row[9],
+            status: row[10] || 'Pending'
+          };
+
+          ordersListContainer.innerHTML += `
+            <div class="order-card">
+              <div class="order-header">
+                <div>
+                  <strong style="color: #fff;">Order ID: ${order.orderId}</strong>
+                  <p style="font-size: 12px; color: rgba(255,255,255,0.4); margin: 5px 0 0 0;">Date: ${order.date}</p>
+                </div>
+                <div><span class="status-badge">${order.status}</span></div>
               </div>
-              <div><span class="status-badge">${order.status || 'Pending'}</span></div>
+              <div class="order-items-list">
+                 <div class="order-item-row"><span style="color: #fff;">Items: ${order.items}</span></div>
+              </div>
+              <div class="order-total-row">
+                <span>Method: ${order.paymentMethod}</span>
+                ${isAdmin && order.status !== 'Done' ? `<button class="done-btn" onclick="alert('Please update status to DONE directly in your Google Sheet.')">Admin: Update in Sheet</button>` : ''}
+                <span style="color: #d12e43; font-size: 16px;">Total: ৳ ${order.totalPrice}</span>
+              </div>
             </div>
-            <div class="order-items-list">
-               <div class="order-item-row"><span style="color: #fff;">Items: ${order.items}</span></div>
-            </div>
-            <div class="order-total-row">
-              <span>Method: ${order.paymentMethod}</span>
-              ${isAdmin && order.status !== 'Done' ? `<button class="done-btn" onclick="markAsDone('${order.orderId}')">Mark as Done</button>` : ''}
-              <span style="color: #d12e43; font-size: 16px;">Total: ৳ ${order.totalPrice.toLocaleString()}</span>
-            </div>
-          </div>
-        `;
-      });
+          `;
+        });
+      } catch (error) {
+        ordersListContainer.innerHTML = "Error loading orders.";
+      }
     });
   </script>
 </body>

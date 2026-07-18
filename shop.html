@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shop - SKYSION</title>
   <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
@@ -15,62 +15,48 @@
       padding: 150px 6% 80px 6%;
     }
 
-    .page-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 32px;
-      font-weight: 400;
-      letter-spacing: 2px;
-      margin-bottom: 40px;
-      text-align: center;
-    }
-
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 40px 25px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
     }
 
     .product-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid rgba(255, 255, 255, 0.05);
-      transition: 0.4s ease;
-    }
-
-    .product-card:hover {
-      border-color: rgba(88, 17, 26, 0.5);
-      transform: translateY(-5px);
-    }
-
-    .img-container {
-      height: 400px;
-      background: #120507;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .img-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .product-details {
       padding: 20px;
       text-align: center;
     }
 
-    .product-details h3 {
-      font-size: 14px;
-      font-weight: 400;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
+    .product-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      margin-bottom: 15px;
     }
 
-    .product-details .price {
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      cursor: pointer;
+      padding: 10px;
+      border: none;
+    }
+
+    .add-to-cart {
+      background: #58111a;
+      color: white;
+    }
+
+    .add-to-wishlist {
+      background: transparent;
+      border: 1px solid #d12e43;
       color: #d12e43;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 15px;
     }
   </style>
 </head>
@@ -78,10 +64,7 @@
 <body>
 
   <header class="navbar">
-    <div class="logo">
-      <a href="index.html">
-        <img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo">
-      </a>
+    <div class="logo"><a href="index.html"><img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo"></a>
     </div>
     <nav>
       <ul class="nav-links">
@@ -90,23 +73,15 @@
         <li><a href="wishlist.html">WISHLIST</a></li>
         <li><a href="orders.html">MY ORDERS</a></li>
         <li><a href="account.html">ACCOUNT</a></li>
-        <!-- ➕ নতুন সাপোর্ট পেজের লিংক এখানে যোগ করা হলো -->
-        <li><a href="support.html">SUPPORT</a></li>
       </ul>
     </nav>
-    <div class="nav-icons">
-      <a href="cart.html">CART (<span id="cart-count">0</span>)</a>
-    </div>
+    <div class="nav-icons"><a href="cart.html">CART (<span id="cart-count">0</span>)</a></div>
   </header>
 
-  <div class="glow-bg" style="width: 400px; height: 400px; background: #58111a; bottom: 10%; right: -5%;"></div>
-
   <main class="shop-container">
-    <h1 class="page-title">Maison Collection</h1>
-
-    <!-- আইডি যোগ করা হলো; এর ভেতর জাভাস্ক্রিপ্ট অটোমেটিক প্রোডাক্টগুলো বসিয়ে দেবে -->
-    <div class="product-grid" id="product-container">
-      <!-- আগে যেখানে ম্যানুয়াল প্রোডাক্ট ছিল, সেগুলো সব মুছে দেওয়া হয়েছে -->
+    <h1 style="text-align: center; margin-bottom: 40px;">Our Collection</h1>
+    <div class="product-grid" id="product-list">
+      <!-- প্রোডাক্টগুলো এখানে জাভাস্ক্রিপ্ট দিয়ে লোড হবে -->
     </div>
   </main>
 
@@ -114,11 +89,35 @@
     <p>&copy; 2026 SKYSION MAISON. ALL RIGHTS RESERVED.</p>
   </footer>
 
-  <!-- জাভাস্ক্রিপ্ট ফাইলগুলোর সঠিক সিরিয়াল লিংক -->
+  <!-- স্ক্রিপ্ট ফাইলগুলো -->
   <script src="js/product.js"></script>
   <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
   <script type="module" src="js/app.js"></script>
 
+  <script>
+    // প্রোডাক্ট লোড করা এবং উইশলিস্ট বাটনসহ কার্ড তৈরি করা
+    const productList = document.getElementById('product-list');
+
+    function loadProducts() {
+      productList.innerHTML = "";
+      products.forEach(product => {
+        productList.innerHTML += `
+                <div class="product-card">
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>৳ ${product.price}</p>
+                    <div class="btn-group">
+                        <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
+                        <button class="add-to-wishlist" onclick="addToWishlist(${product.id})">Add to Wishlist</button>
+                    </div>
+                </div>
+            `;
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", loadProducts);
+  </script>
 </body>
 
 </html>
