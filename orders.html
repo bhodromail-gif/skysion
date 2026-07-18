@@ -58,10 +58,21 @@
     .order-total-row {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       font-weight: 600;
       margin-top: 15px;
       padding-top: 15px;
       border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .done-btn {
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 12px;
     }
   </style>
 </head>
@@ -69,8 +80,7 @@
 <body>
 
   <header class="navbar">
-    <div class="logo">
-      <a href="index.html"><img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo"></a>
+    <div class="logo"><a href="index.html"><img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo"></a>
     </div>
     <nav>
       <ul class="nav-links">
@@ -80,28 +90,37 @@
         <li><a href="account.html">ACCOUNT</a></li>
       </ul>
     </nav>
-    <div class="nav-icons">
-      <a href="cart.html">CART (<span id="cart-count">0</span>)</a>
-    </div>
+    <div class="nav-icons"><a href="cart.html">CART (<span id="cart-count">0</span>)</a></div>
   </header>
 
   <main class="orders-container">
     <h2>My Orders</h2>
-    <div id="my-orders-list">
-      <!-- কাস্টমারের অর্ডারগুলো জাভাস্ক্রিপ্ট দিয়ে এখানে লোড হবে -->
-    </div>
+    <div id="my-orders-list"></div>
   </main>
 
   <script src="js/product.js"></script>
   <script src="js/cart.js"></script>
-  <!-- কাস্টমারের অর্ডার দেখানোর জন্য মডিউল স্ক্রিপ্ট -->
-  <script type="module">
+
+  <script>
+    // অর্ডার স্ট্যাটাস আপডেট করার ফাংশন
+    function markAsDone(orderId) {
+      let myOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
+      myOrders = myOrders.map(order => {
+        if (order.orderId === orderId) {
+          order.status = "Done";
+        }
+        return order;
+      });
+      localStorage.setItem('myOrders', JSON.stringify(myOrders));
+      location.reload();
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       const ordersListContainer = document.getElementById('my-orders-list');
-      if (!ordersListContainer) return;
+      const urlParams = new URLSearchParams(window.location.search);
+      const isAdmin = urlParams.get('admin') === 'true'; // URL এ ?admin=true থাকলে বাটন দেখাবে
 
-      // লোকাল স্টোরেজ থেকে কাস্টমারের অর্ডার হিস্ট্রি রিড করা
-      let myOrders = JSON.parse(localStorage.getItem('my_orders')) || [];
+      let myOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
 
       if (myOrders.length === 0) {
         ordersListContainer.innerHTML = `<p style="color: rgba(255,255,255,0.4); text-align: center; padding: 50px 0;">You haven't placed any orders yet.</p>`;
@@ -110,16 +129,6 @@
 
       ordersListContainer.innerHTML = "";
       myOrders.forEach(order => {
-        let itemsHtml = "";
-        order.items.forEach(item => {
-          itemsHtml += `
-            <div class="order-item-row">
-              <span>${item.name} (x${item.quantity})</span>
-              <span>৳ ${(item.price * item.quantity).toLocaleString()}</span>
-            </div>
-          `;
-        });
-
         ordersListContainer.innerHTML += `
           <div class="order-card">
             <div class="order-header">
@@ -127,16 +136,15 @@
                 <strong style="color: #fff;">Order ID: ${order.orderId}</strong>
                 <p style="font-size: 12px; color: rgba(255,255,255,0.4); margin: 5px 0 0 0;">Date: ${order.date}</p>
               </div>
-              <div>
-                <span class="status-badge">${order.status || 'Pending'}</span>
-              </div>
+              <div><span class="status-badge">${order.status || 'Pending'}</span></div>
             </div>
             <div class="order-items-list">
-              ${itemsHtml}
+               <div class="order-item-row"><span style="color: #fff;">Items: ${order.items}</span></div>
             </div>
             <div class="order-total-row">
-              <span>Method: ${order.paymentMethod || order.payment}</span>
-              <span style="color: #d12e43; font-size: 16px;">Total: ৳ ${order.totalPrice ? order.totalPrice.toLocaleString() : order.total.toLocaleString()}</span>
+              <span>Method: ${order.paymentMethod}</span>
+              ${isAdmin && order.status !== 'Done' ? `<button class="done-btn" onclick="markAsDone('${order.orderId}')">Mark as Done</button>` : ''}
+              <span style="color: #d12e43; font-size: 16px;">Total: ৳ ${order.totalPrice.toLocaleString()}</span>
             </div>
           </div>
         `;
