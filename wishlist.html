@@ -115,17 +115,34 @@
     <p>&copy; 2026 SKYSION MAISON. ALL RIGHTS RESERVED.</p>
   </footer>
 
-  <!-- স্ক্রিপ্ট লিঙ্কগুলো সঠিকভাবে সাজানো হয়েছে -->
+  <!-- Firebase Initialization -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdQ9XMtzELlWmtVvCt86dmkl8Oo4wyBFA",
+      authDomain: "skysion.firebaseapp.com",
+      projectId: "skysion",
+      storageBucket: "skysion.firebasestorage.app",
+      messagingSenderId: "984734912155",
+      appId: "1:984734912155:web:246eb7168f775fb908c03e",
+      measurementId: "G-FXSCM6QDSQ"
+    };
+    initializeApp(firebaseConfig);
+  </script>
+
+  <!-- স্ক্রিপ্টগুলো -->
   <script src="js/product.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/wishlist.js"></script>
   <script type="module" src="js/app.js"></script>
 
   <script>
-    // নিশ্চিত করার জন্য যে DOM লোড হওয়ার পর উইশলিস্ট দেখাবে
     document.addEventListener("DOMContentLoaded", () => {
+      // wishlist.js এ থাকা ফাংশনটি কল করা
       if (typeof displayWishlist === 'function') {
         displayWishlist();
+      } else {
+        console.warn("displayWishlist function not found in wishlist.js");
       }
     });
   </script>

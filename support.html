@@ -102,10 +102,7 @@
 <body>
 
   <header class="navbar">
-    <div class="logo">
-      <a href="index.html">
-        <img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo">
-      </a>
+    <div class="logo"><a href="index.html"><img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo"></a>
     </div>
     <nav>
       <ul class="nav-links">
@@ -117,38 +114,29 @@
         <li><a href="support.html" class="active">SUPPORT</a></li>
       </ul>
     </nav>
-    <div class="nav-icons">
-      <a href="cart.html">CART (<span id="cart-count">0</span>)</a>
-    </div>
+    <div class="nav-icons"><a href="cart.html">CART (<span id="cart-count">0</span>)</a></div>
   </header>
 
   <main class="support-container">
-    <!-- বাম পাশ: যোগাযোগের সাধারণ তথ্য -->
     <div class="support-info">
       <h2>Customer Support</h2>
-      <p>আমাদের ডেডিকেটেড সাপোর্ট টিম আপনার যেকোনো জিজ্ঞাসা বা অর্ডার সংক্রান্ত সমস্যার সমাধানে প্রস্তুত। নিচে ফর্মটি
-        পূরণ করুন অথবা সরাসরি আমাদের ইমেইলে যোগাযোগ করুন।</p>
-
+      <p>আমাদের ডেডিকেটেড সাপোর্ট টিম আপনার যেকোনো জিজ্ঞাসা বা অর্ডার সংক্রান্ত সমস্যার সমাধানে প্রস্তুত।</p>
       <div class="info-item">
         <h4>Email Response</h4>
         <p>skysionclothing@gmail.com</p>
       </div>
-
       <div class="info-item">
         <h4>Operating Hours</h4>
         <p>Sunday - Thursday: 10:00 AM - 10:00 PM</p>
       </div>
-
       <div class="info-item">
         <h4>Response Time</h4>
         <p>সাধারণত আমরা ২৪ ঘণ্টার মধ্যে রিপ্লাই দিয়ে থাকি।</p>
       </div>
     </div>
 
-    <!-- ডান পাশ: কাস্টমার মেসেজ ও অর্ডার ফর্ম -->
     <div class="support-form-box">
       <h2>Send a Message</h2>
-      <!-- Netlify Form কানেক্টেড এবং ফর্মের নাম দেওয়া হয়েছে "customer_orders" -->
       <form id="support-form" method="POST" data-netlify="true" name="customer_orders">
         <div class="form-group">
           <label>Full Name</label>
@@ -167,38 +155,37 @@
           <textarea id="support-message" name="message" rows="5" required
             placeholder="আপনার সমস্যাটি বিস্তারিত লিখুন..."></textarea>
         </div>
-
-        <!-- 🚨 হিডেন ইনপুট ফিল্ডস: যা কাস্টমারের কার্টের আইটেম ও টোটাল প্রাইজ অটোমেটিক ব্যাকএন্ডে পাঠাবে 🚨 -->
         <input type="hidden" name="cart_items" id="hidden-cart-items">
         <input type="hidden" name="cart_total" id="hidden-cart-total">
-
         <button type="submit" class="btn-premium" style="width: 100%; margin-top: 10px;">SUBMIT TICKET</button>
       </form>
     </div>
   </main>
 
-  <footer>
-    <p>&copy; 2026 SKYSION MAISON. ALL RIGHTS RESERVED.</p>
-  </footer>
+  <!-- Firebase Initialization -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdQ9XMtzELlWmtVvCt86dmkl8Oo4wyBFA",
+      authDomain: "skysion.firebaseapp.com",
+      projectId: "skysion",
+      storageBucket: "skysion.firebasestorage.app",
+      messagingSenderId: "984734912155",
+      appId: "1:984734912155:web:246eb7168f775fb908c03e",
+      measurementId: "G-FXSCM6QDSQ"
+    };
+    initializeApp(firebaseConfig);
+  </script>
 
-  <!-- জাভাস্ক্রিপ্ট ফাইলগুলোর সঠিক সিরিয়াল লিংক -->
   <script src="js/product.js"></script>
   <script src="js/cart.js"></script>
   <script type="module" src="js/app.js"></script>
 
-  <!-- 🪄 অর্ডারের ডেটা সংগ্রহ করার জাভাস্ক্রিপ্ট ম্যাজিক কোড -->
   <script>
     document.getElementById('support-form').addEventListener('submit', function (e) {
-      // লোকাল স্টোরেজ থেকে কার্টের আইটেম ডাটা নেওয়া হচ্ছে
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-      // কার্টের প্রোডাক্টগুলোর নাম ও পরিমাণের লিস্ট তৈরি (যেমন: Premium Shirt x2, Luxury Pant x1)
       const itemsList = cart.map(item => `${item.name} (x${item.quantity || 1})`).join(', ');
-
-      // লোকাল স্টোরেজ থেকে মোট টাকার পরিমাণ নেওয়া হচ্ছে
       const totalAmount = localStorage.getItem('cartTotal') || '0 BDT';
-
-      // ফর্ম সাবমিট হওয়ার ঠিক আগে হিডেন ইনপুটগুলোতে ডেটা সেট করা হচ্ছে
       document.getElementById('hidden-cart-items').value = itemsList ? itemsList : "No items in cart";
       document.getElementById('hidden-cart-total').value = totalAmount;
     });

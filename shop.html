@@ -81,7 +81,7 @@
   <main class="shop-container">
     <h1 style="text-align: center; margin-bottom: 40px;">Our Collection</h1>
     <div class="product-grid" id="product-list">
-      <!-- প্রোডাক্টগুলো এখানে জাভাস্ক্রিপ্ট দিয়ে লোড হবে -->
+      <!-- প্রোডাক্টগুলো এখানে লোড হবে -->
     </div>
   </main>
 
@@ -89,30 +89,53 @@
     <p>&copy; 2026 SKYSION MAISON. ALL RIGHTS RESERVED.</p>
   </footer>
 
-  <!-- স্ক্রিপ্ট ফাইলগুলো -->
+  <!-- Firebase Initialization -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdQ9XMtzELlWmtVvCt86dmkl8Oo4wyBFA",
+      authDomain: "skysion.firebaseapp.com",
+      projectId: "skysion",
+      storageBucket: "skysion.firebasestorage.app",
+      messagingSenderId: "984734912155",
+      appId: "1:984734912155:web:246eb7168f775fb908c03e",
+      measurementId: "G-FXSCM6QDSQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    console.log("Firebase Connected in Shop Page");
+  </script>
+
+  <!-- স্ক্রিপ্ট ফাইল -->
   <script src="js/product.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/wishlist.js"></script>
   <script type="module" src="js/app.js"></script>
 
   <script>
-    // প্রোডাক্ট লোড করা এবং উইশলিস্ট বাটনসহ কার্ড তৈরি করা
     const productList = document.getElementById('product-list');
 
     function loadProducts() {
+      if (typeof products === 'undefined') {
+        productList.innerHTML = "<p>Loading products...</p>";
+        return;
+      }
       productList.innerHTML = "";
       products.forEach(product => {
         productList.innerHTML += `
-                <div class="product-card">
-                    <img src="${product.image}" alt="${product.name}">
-                    <h3>${product.name}</h3>
-                    <p>৳ ${product.price}</p>
-                    <div class="btn-group">
-                        <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
-                        <button class="add-to-wishlist" onclick="addToWishlist(${product.id})">Add to Wishlist</button>
-                    </div>
+            <div class="product-card">
+                <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>৳ ${product.price}</p>
+                <div class="btn-group">
+                    <button class="add-to-cart" onclick="window.addToCart(${product.id})">Add to Cart</button>
+                    <button class="add-to-wishlist" onclick="window.addToWishlist(${product.id})">Add to Wishlist</button>
                 </div>
-            `;
+            </div>
+        `;
       });
     }
 

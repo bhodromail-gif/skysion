@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+  <link rel="icon" type="image/jpeg" href="images/img/logo/logo.jpeg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Orders - SKYSION</title>
@@ -64,16 +65,6 @@
       padding-top: 15px;
       border-top: 1px dashed rgba(255, 255, 255, 0.1);
     }
-
-    .done-btn {
-      background: #27ae60;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      cursor: pointer;
-      border-radius: 4px;
-      font-size: 12px;
-    }
   </style>
 </head>
 
@@ -98,24 +89,34 @@
     <div id="my-orders-list">Loading orders...</div>
   </main>
 
-  <script src="js/product.js"></script>
-  <script src="js/cart.js"></script>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdQ9XMtzELlWmtVvCt86dmkl8Oo4wyBFA",
+      authDomain: "skysion.firebaseapp.com",
+      projectId: "skysion",
+      storageBucket: "skysion.firebasestorage.app",
+      messagingSenderId: "984734912155",
+      appId: "1:984734912155:web:246eb7168f775fb908c03e",
+      measurementId: "G-FXSCM6QDSQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Google Script থেকে ডাটা লোড করার লজিক
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNnaYNC-Nl-R1jfb_VZUpXfnOqZ4zFetryclJG_vc0zHarou8ofRzjd0VU7F1cUiVu/exec';
+    const ordersListContainer = document.getElementById('my-orders-list');
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      const ordersListContainer = document.getElementById('my-orders-list');
-      const urlParams = new URLSearchParams(window.location.search);
-      const isAdmin = urlParams.get('sharumywife') === 'true';
-
+    async function loadOrders() {
       try {
         const response = await fetch(SCRIPT_URL);
         const data = await response.json();
-
         ordersListContainer.innerHTML = "";
 
-        // প্রথম রো হেডার হলে slice(1) দিয়ে বাদ দেওয়া হয়েছে
         data.slice(1).reverse().forEach((row) => {
           const order = {
             orderId: row[0],
@@ -135,22 +136,24 @@
                 </div>
                 <div><span class="status-badge">${order.status}</span></div>
               </div>
-              <div class="order-items-list">
-                 <div class="order-item-row"><span style="color: #fff;">Items: ${order.items}</span></div>
-              </div>
+              <div class="order-item-row"><span>Items: ${order.items}</span></div>
               <div class="order-total-row">
                 <span>Method: ${order.paymentMethod}</span>
-                ${isAdmin && order.status !== 'Done' ? `<button class="done-btn" onclick="alert('Please update status to DONE directly in your Google Sheet.')">Admin: Update in Sheet</button>` : ''}
                 <span style="color: #d12e43; font-size: 16px;">Total: ৳ ${order.totalPrice}</span>
               </div>
             </div>
           `;
         });
       } catch (error) {
-        ordersListContainer.innerHTML = "Error loading orders.";
+        ordersListContainer.innerHTML = "<p>Error loading orders. Please check your connection.</p>";
       }
-    });
+    }
+
+    document.addEventListener("DOMContentLoaded", loadOrders);
   </script>
+
+  <script src="js/product.js"></script>
+  <script src="js/cart.js"></script>
 </body>
 
 </html>

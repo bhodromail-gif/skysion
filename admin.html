@@ -41,11 +41,29 @@
 <body>
   <h2>😎 SKYSION ADMIN DASHBOARD (All Client Orders)</h2>
   <div id="admin-orders">
-    <!-- এখানে লোকাল মেমোরির সব অর্ডার চলে আসবে -->
+    <p>Loading orders...</p>
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdQ9XMtzELlWmtVvCt86dmkl8Oo4wyBFA",
+      authDomain: "skysion.firebaseapp.com",
+      projectId: "skysion",
+      storageBucket: "skysion.firebasestorage.app",
+      messagingSenderId: "984734912155",
+      appId: "1:984734912155:web:246eb7168f775fb908c03e",
+      measurementId: "G-FXSCM6QDSQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // লোকাল স্টোরেজ থেকে ডাটা লোড ও রেন্ডার করার ফাংশন
+    function renderOrders() {
       const container = document.getElementById('admin-orders');
       let allOrders = JSON.parse(localStorage.getItem('my_orders')) || [];
 
@@ -55,35 +73,37 @@
       }
 
       let tableHTML = `<table><tr><th>Order ID</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th></tr>`;
-
       allOrders.forEach((order, index) => {
         let itemsText = order.items.map(i => `${i.name} (${i.quantity})`).join(', ');
         tableHTML += `
-                    <tr>
-                        <td>${order.orderId}</td>
-                        <td>${order.date}</td>
-                        <td>${itemsText}</td>
-                        <td>৳ ${order.total}</td>
-                        <td>
-                            <select onchange="updateStatus(${index}, this.value)">
-                                <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                <option value="Processing" ${order.status === 'Processing' ? 'selected' : ''}>Processing</option>
-                                <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                            </select>
-                        </td>
-                    </tr>
-                `;
+          <tr>
+            <td>${order.orderId}</td>
+            <td>${order.date}</td>
+            <td>${itemsText}</td>
+            <td>৳ ${order.total}</td>
+            <td>
+              <select onchange="window.updateStatus(${index}, this.value)">
+                <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                <option value="Processing" ${order.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+              </select>
+            </td>
+          </tr>
+        `;
       });
       tableHTML += `</table>`;
       container.innerHTML = tableHTML;
-    });
+    }
 
-    function updateStatus(index, newStatus) {
+    // গ্লোবাল ফাংশন হিসেবে ডিক্লেয়ার করা
+    window.updateStatus = function (index, newStatus) {
       let allOrders = JSON.parse(localStorage.getItem('my_orders')) || [];
       allOrders[index].status = newStatus;
       localStorage.setItem('my_orders', JSON.stringify(allOrders));
       alert("Order status updated to: " + newStatus);
-    }
+    };
+
+    document.addEventListener("DOMContentLoaded", renderOrders);
   </script>
 </body>
 

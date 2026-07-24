@@ -3,7 +3,6 @@
 
 <head>
   <link rel="icon" type="image/jpeg" href="images/img/logo/logo.jpeg">
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Account - SKYSION</title>
@@ -64,7 +63,6 @@
       margin-bottom: 15px;
     }
 
-    /* Gateway Modal */
     .gw-modal {
       position: fixed;
       top: 0;
@@ -111,11 +109,7 @@
 <body>
 
   <header class="navbar">
-    <div class="logo">
-      <a href="index.html">
-        <!-- একদম সঠিক পাথটি নিচে দেওয়া হলো -->
-        <img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo">
-      </a>
+    <div class="logo"><a href="index.html"><img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo"></a>
     </div>
     <nav>
       <ul class="nav-links">
@@ -126,26 +120,18 @@
         <li><a href="account.html" class="active">ACCOUNT</a></li>
       </ul>
     </nav>
-    <div class="nav-icons">
-      <a href="cart.html">CART (<span id="cart-count">0</span>)</a>
-    </div>
+    <div class="nav-icons"><a href="cart.html">CART (<span id="cart-count">0</span>)</a></div>
   </header>
 
   <main class="account-container">
-    <!-- বামে: প্রোফাইল ডিটেইলস -->
     <div class="profile-card">
       <h2>Maison Profile</h2>
-      <div class="profile-info" id="user-profile-data">
-        <!-- JS দিয়ে আসবে -->
-      </div>
+      <div class="profile-info" id="user-profile-data"></div>
     </div>
-
-    <!-- ডানে: স্কাইশন ওয়ালেট -->
     <div class="wallet-card">
       <h2>Skysion Wallet</h2>
       <p style="font-size: 12px; letter-spacing: 1px; color: rgba(255,255,255,0.5);">AVAILABLE BALANCE</p>
       <div class="wallet-amount" id="wallet-balance">৳ 0</div>
-
       <h3>Top Up Wallet</h3>
       <form class="deposit-form" id="deposit-form">
         <select id="deposit-method">
@@ -158,7 +144,6 @@
     </div>
   </main>
 
-  <!-- পেমেন্ট পপআপ স্ক্রিন -->
   <div class="gw-modal" id="wallet-gw">
     <div class="gw-box" id="gw-card">
       <h3 id="gw-title">bKash Gateway</h3>
@@ -177,6 +162,26 @@
     </div>
   </div>
 
+  <!-- Firebase ও অন্যান্য স্ক্রিপ্ট -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdQ9XMtzELlWmtVvCt86dmkl8Oo4wyBFA",
+      authDomain: "skysion.firebaseapp.com",
+      projectId: "skysion",
+      storageBucket: "skysion.firebasestorage.app",
+      messagingSenderId: "984734912155",
+      appId: "1:984734912155:web:246eb7168f775fb908c03e",
+      measurementId: "G-FXSCM6QDSQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    console.log("Firebase Connected in Account Page");
+  </script>
+
   <script type="module" src="js/app.js"></script>
   <script>
     let depAmt = 0;
@@ -189,10 +194,10 @@
         return;
       }
       document.getElementById('user-profile-data').innerHTML = `
-                <p><strong>Name:</strong> ${savedUser.name}</p>
-                <p><strong>Email:</strong> ${savedUser.email}</p>
-                <button class="btn-premium" onclick="logout()" style="width:100%; margin-top:20px;">LOG OUT</button>
-            `;
+        <p><strong>Name:</strong> ${savedUser.name}</p>
+        <p><strong>Email:</strong> ${savedUser.email}</p>
+        <button class="btn-premium" onclick="logout()" style="width:100%; margin-top:20px;">LOG OUT</button>
+      `;
       updateWalletDisplay();
     });
 
@@ -200,7 +205,6 @@
       e.preventDefault();
       depAmt = parseFloat(document.getElementById('deposit-qty').value);
       depMethod = document.getElementById('deposit-method').value;
-
       document.getElementById('wallet-gw').style.display = 'flex';
       document.getElementById('gw-card').className = 'gw-box ' + depMethod + '-theme';
       document.getElementById('gw-title').innerText = depMethod.toUpperCase() + ' Security Gateway';
@@ -217,11 +221,9 @@
 
     function verifyAndDeposit() {
       const pin = document.getElementById('gw-pin').value;
-      // পিন ভেরিফিকেশন চেক (১২৩৪৫)
       if (pin === '12345') {
         let currentBal = parseFloat(localStorage.getItem('skysion_wallet')) || 0;
         localStorage.setItem('skysion_wallet', (currentBal + depAmt).toString());
-
         alert(`✨ Congratulations! ৳${depAmt} successfully added to your Skysion Wallet.`);
         document.getElementById('wallet-gw').style.display = 'none';
         updateWalletDisplay();
