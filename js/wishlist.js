@@ -31,7 +31,7 @@ function displayWishlist() {
                 <div class="wishlist-card">
                     <button class="remove-wishlist" onclick="removeFromWishlist(${product.id})">&times;</button>
                     <div class="img-container">
-                        <img src="${product.image}" alt="${product.name}">
+                        <img src="${product.image}" alt="${product.name}" loading="lazy">
                     </div>
                     <h3>${product.name}</h3>
                     <p class="price">৳ ${product.price}</p>

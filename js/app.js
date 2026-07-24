@@ -51,7 +51,7 @@ function displayCart() {
             grandTotal += itemTotal;
             cartBody.innerHTML += `
                 <tr>
-                    <td><div class="cart-product-info"><img src="${product.image}" alt="${product.name}"><span>${product.name} ${item.quantity > 1 ? `x ${item.quantity}` : ''}</span></div></td>
+                    <td><div class="cart-product-info"><img src="${product.image}" alt="${product.name}" loading="lazy"><span>${product.name} ${item.quantity > 1 ? `x ${item.quantity}` : ''}</span></div></td>
                     <td>৳ ${product.price}</td>
                     <td><button class="remove-btn" onclick="removeFromCart(${product.id})">&times;</button></td>
                 </tr>`;
@@ -128,7 +128,7 @@ async function placeOrder(method) {
             body: JSON.stringify(orderData)
         });
         
-        // অর্ডার ব্রাউজারে সেভ করা (যাতে orders.html এ দেখা যায়)
+        // অর্ডার ব্রাউজারে সেভ করা (যাতে orders.html এ দেখা যায়)
         let myOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
         myOrders.push(orderData);
         localStorage.setItem('myOrders', JSON.stringify(myOrders));

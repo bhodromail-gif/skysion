@@ -57,7 +57,7 @@ function displayProducts() {
             productContainer.innerHTML += `
                 <div class="product-card">
                     <div class="img-container">
-                        <img src="${product.image}" alt="${product.name}">
+                        <img src="${product.image}" alt="${product.name}" loading="lazy">
                     </div>
                     <div class="product-details">
                         <h3>${product.name}</h3>

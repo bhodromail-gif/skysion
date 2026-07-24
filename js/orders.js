@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <link rel="icon" type="image/jpeg" href="images/img/logo/logo.jpeg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Orders - SKYSION</title>
+
+  <!-- পারফরম্যান্স বৃদ্ধির জন্য প্রিকানেক্ট -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
@@ -19,7 +26,11 @@
 
 <body>
   <header class="navbar">
-    <div class="logo"><a href="index.html"><img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo"></a></div>
+    <div class="logo">
+      <a href="index.html">
+        <img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo" width="120" height="40">
+      </a>
+    </div>
     <nav>
       <ul class="nav-links">
         <li><a href="index.html">HOME</a></li>
@@ -36,12 +47,11 @@
     <div id="my-orders-list"></div>
   </main>
 
-  <script src="js/product.js"></script>
-  <script src="js/cart.js"></script>
-  <script>
+  <script src="js/product.js" defer></script>
+  <script src="js/cart.js" defer></script>
+  <script defer>
     document.addEventListener("DOMContentLoaded", () => {
       const ordersListContainer = document.getElementById('my-orders-list');
-      // 'my_orders' এর বদলে 'myOrders' ব্যবহার করা হয়েছে যা app.js এ সেভ হয়
       let myOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
 
       if (myOrders.length === 0) {
@@ -51,7 +61,6 @@
 
       ordersListContainer.innerHTML = "";
       myOrders.forEach(order => {
-        // items এখন একটি স্ট্রিং, তাই সরাসরি বসানো হয়েছে
         ordersListContainer.innerHTML += `
           <div class="order-card">
             <div class="order-header">
@@ -74,4 +83,5 @@
     });
   </script>
 </body>
+
 </html>

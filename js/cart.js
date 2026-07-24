@@ -58,7 +58,7 @@ function displayCart() {
             grandTotal += itemTotal;
             cartBody.innerHTML += `
                 <tr>
-                    <td><img src="${product.image}" width="50"> ${product.name} x ${item.quantity}</td>
+                    <td><img src="${product.image}" width="50" loading="lazy" alt="${product.name}"> ${product.name} x ${item.quantity}</td>
                     <td>৳ ${product.price}</td>
                     <td><button class="remove-btn" onclick="removeFromCart(${product.id})">&times;</button></td>
                 </tr>`;
@@ -91,13 +91,13 @@ async function placeOrder(method) {
     let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
     if (cartItems.length === 0) { alert('Cart is empty!'); return; }
 
-    // ইউজার থেকে ইনপুট ফিল্ডের ডাটা নেওয়া (আপনার ফর্মের আইডি অনুযায়ী)
+    // ইউজার থেকে ইনপুট ফিল্ডের ডাটা নেওয়া
     const orderData = {
         orderId: "SK-" + Math.floor(100000 + Math.random() * 900000),
         date: new Date().toLocaleDateString('bn-BD'),
-        customerName: document.getElementById('name').value,
-        phone: document.getElementById('phone').value,
-        address: document.getElementById('address').value,
+        customerName: document.getElementById('name')?.value || "",
+        phone: document.getElementById('phone')?.value || "",
+        address: document.getElementById('address')?.value || "",
         totalPrice: totalOrderPrice,
         paymentMethod: method,
         senderNumber: document.getElementById('senderNumber')?.value || "N/A",
@@ -109,11 +109,17 @@ async function placeOrder(method) {
     try {
         const response = await fetch('https://script.google.com/macros/s/AKfycbwNnaYNC-Nl-R1jfb_VZUpXfnOqZ4zFetryclJG_vc0zHarou8ofRzjd0VU7F1cUiVu/exec', {
             method: 'POST',
-            mode: 'no-cors', // এটি ক্রস-অরিজিন এরর এড়াতে সাহায্য করবে
+            mode: 'no-cors', // ক্রস-অরিজিন এরর এড়াতে সাহায্য করবে
             body: JSON.stringify(orderData)
         });
         
         alert('🎉 Order placed successfully!');
+        
+        // অর্ডারের ডাটা লোকাল স্টোরেজে সেভ করে রাখা যাতে orders.html পেজে দেখানো যায়
+        let myOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
+        myOrders.unshift(orderData); // নতুন অর্ডারটি সবার উপরে যুক্ত হবে
+        localStorage.setItem('myOrders', JSON.stringify(myOrders));
+
         localStorage.removeItem('cart');
         window.location.href = 'orders.html';
     } catch (error) {
