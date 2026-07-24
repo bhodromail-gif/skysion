@@ -16,8 +16,37 @@ const products = [
         name: "PREMIUM SKYSION JACKET",
         image: "images/img/products/product-3.jpg", 
         price: 499
+    },
+    {
+        id: 4,
+        name: "STANDARD SKYSION T-SHIRT",
+        image: "images/img/products/product-4.png", 
+        price: 499
+    },
+    {
+        id: 5,
+        name: "DELUXE SKYSION PANTS",
+        image: "images/img/products/product-5.png",
+        price: 499
+    },
+    {  
+        id: 6,
+        name: "DELUXE SKYSION PANTS",
+        image: "images/img/products/product-6.png",
+        price: 499
+    },
+    {        id: 7,
+        name: "DELUXE SKYSION PANTS",
+        image: "images/img/products/product-7.png",
+        price: 499
+    },
+    {        id: 8,
+        name: "DELUXE SKYSION PANTS",
+        image: "images/img/products/product-8.png",
+        price: 499
     }
 ];
+
 
 function displayProducts() {
     const productContainer = document.getElementById('product-container');
