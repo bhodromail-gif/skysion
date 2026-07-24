@@ -7,6 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SKYSION | Luxury Clothing</title>
 
+  <!-- পারফরম্যান্স বৃদ্ধির জন্য প্রিকানেক্ট -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <!-- গুগল ফন্টস -->
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
@@ -92,8 +96,8 @@
     <p>&copy; 2026 SKYSION MAISON. ALL RIGHTS RESERVED.</p>
   </footer>
 
-  <!-- Firebase ও অন্যান্য স্ক্রিপ্ট -->
-  <script src="js/slider.js"></script>
+  <!-- স্ক্রিপ্টগুলোতে defer যোগ করা হয়েছে যাতে রেন্ডার ব্লক না করে -->
+  <script src="js/slider.js" defer></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
