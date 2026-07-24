@@ -25,28 +25,29 @@ const products = [
     },
     {
         id: 5,
-        name: "DELUXE SKYSION PANTS",
+        name: "DELUXE SKYSION SHIRT",
         image: "images/img/products/product-5.png",
         price: 499
     },
     {  
         id: 6,
-        name: "DELUXE SKYSION PANTS",
+        name: "DELUXE SKYSION SHIRT",
         image: "images/img/products/product-6.png",
         price: 499
     },
-    {        id: 7,
-        name: "DELUXE SKYSION PANTS",
+    {         
+        id: 7,
+        name: "DELUXE SKYSION SHIRT",
         image: "images/img/products/product-7.png",
         price: 499
     },
-    {        id: 8,
-        name: "DELUXE SKYSION PANTS",
+    {         
+        id: 8,
+        name: "DELUXE SKYSION SHIRT",
         image: "images/img/products/product-8.png",
         price: 499
     }
 ];
-
 
 function displayProducts() {
     const productContainer = document.getElementById('product-container');
@@ -63,7 +64,6 @@ function displayProducts() {
                         <p class="price">৳ ${product.price}</p>
                         <div style="display: flex; gap: 10px; justify-content: center;">
                             <button class="btn-premium" onclick="addToCart(${product.id})">ADD TO CART</button>
-                            <!-- উইশলিস্ট বাটন -->
                             <button class="btn-premium" style="background: transparent; border: 1px solid #d12e43; color: #d12e43;" onclick="addToWishlist(${product.id})">♥</button>
                         </div>
                     </div>
