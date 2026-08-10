@@ -3,7 +3,7 @@ const products = [
         id: 1,
         name: "SILK SKYSION SHIRT",
         image: "images/img/products/product-1.jpg", 
-        price: 499,
+        price: 399,
         sizes: ["M", "L", "XL", "XXL"],
         stock: 12
     },
@@ -11,7 +11,7 @@ const products = [
         id: 2,
         name: "OBSIDIAN OVERSIZED HOODIE",
         image: "images/img/products/product-2.jpg", 
-        price: 499,
+        price: 399,
         sizes: ["M", "L", "XL", "XXL"],
         stock: 8
     },
@@ -19,23 +19,23 @@ const products = [
         id: 3,
         name: "PREMIUM SKYSION JACKET",
         image: "images/img/products/product-3.jpg", 
-        price: 499,
-        sizes: ["L", "XL", "XXL"],
+        price: 399,
+        sizes: ["M", "L", "XL", "XXL"],
         stock: 5
     },
     {
         id: 4,
         name: "STANDARD SKYSION T-SHIRT",
         image: "images/img/products/product-4.png", 
-        price: 499,
-        sizes: ["M", "L", "XL"],
+        price: 399,
+        sizes: ["M", "L", "XL", "XXL"],
         stock: 15
     },
     {
         id: 5,
         name: "DELUXE SKYSION SHIRT",
         image: "images/img/products/product-5.png",
-        price: 499,
+        price: 399,
         sizes: ["M", "L", "XL", "XXL"],
         stock: 10
     },
@@ -43,23 +43,23 @@ const products = [
         id: 6,
         name: "DELUXE SKYSION SHIRT",
         image: "images/img/products/product-6.png",
-        price: 499,
-        sizes: ["M", "L", "XL"],
+        price: 399,
+        sizes: ["M", "L", "XL","XXL"],
         stock: 7
     },
     {         
         id: 7,
         name: "DELUXE SKYSION SHIRT",
         image: "images/img/products/product-7.png",
-        price: 499,
-        sizes: ["L", "XL", "XXL"],
+        price: 399,
+        sizes: ["M", "L", "XL", "XXL"],
         stock: 4
     },
     {         
         id: 8,
         name: "DELUXE SKYSION SHIRT",
         image: "images/img/products/product-8.png",
-        price: 499,
+        price: 399,
         sizes: ["M", "L", "XL", "XXL"],
         stock: 20
     }
