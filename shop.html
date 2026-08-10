@@ -2,16 +2,9 @@
 <html lang="en">
 
 <head>
-  <link rel="icon" type="image/jpeg" href="images/img/logo/logo.jpeg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shop - SKYSION</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
-    rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
     .shop-container {
@@ -37,30 +30,6 @@
       object-fit: cover;
       margin-bottom: 15px;
     }
-
-    .btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    button {
-      cursor: pointer;
-      padding: 10px;
-      border: none;
-    }
-
-    .add-to-cart {
-      background: #58111a;
-      color: white;
-    }
-
-    .add-to-wishlist {
-      background: transparent;
-      border: 1px solid #d12e43;
-      color: #d12e43;
-    }
   </style>
 </head>
 
@@ -68,9 +37,7 @@
 
   <header class="navbar">
     <div class="logo">
-      <a href="index.html">
-        <img src="images/img/logo/logo.jpeg" alt="SKYSION LOGO" id="nav-logo" width="120" height="40">
-      </a>
+      <a href="index.html"><img src="images/img/logo/logo.jpeg" alt="Logo" width="120" height="40"></a>
     </div>
     <nav>
       <ul class="nav-links">
@@ -86,18 +53,16 @@
 
   <main class="shop-container">
     <h1 style="text-align: center; margin-bottom: 40px;">Our Collection</h1>
-    <div class="product-grid" id="product-container">
-      <!-- প্রোডাক্টগুলো এখানে লোড হবে -->
-    </div>
+    <div class="product-grid" id="product-container"></div>
   </main>
 
   <footer>
     <p>&copy; 2026 SKYSION MAISON. ALL RIGHTS RESERVED.</p>
   </footer>
 
-  <!-- জাভাস্ক্রিপ্ট ফাইলগুলো কোনো ফোল্ডারের ঝামেলা ছাড়াই সরাসরি রুট থেকে লোড হবে -->
-  <script src="product.js"></script>
-  <script src="cart.js"></script>
+  <!-- সঠিক পাথ -->
+  <script src="js/product.js"></script>
+  <script src="js/cart.js"></script>
 
 </body>
 
