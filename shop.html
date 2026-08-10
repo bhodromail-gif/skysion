@@ -7,10 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shop - SKYSION</title>
 
-  <!-- পারফরম্যান্স বৃদ্ধির জন্য প্রিকানেক্ট -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
     rel="stylesheet">
@@ -88,9 +86,8 @@
 
   <main class="shop-container">
     <h1 style="text-align: center; margin-bottom: 40px;">Our Collection</h1>
-    <!-- আইডি এখানে product-container করা হয়েছে যা product.js এর সাথে মিলে -->
     <div class="product-grid" id="product-container">
-      <!-- প্রোডাক্টগুলো এখানে স্বয়ংক্রিয়ভাবে লোড হবে -->
+      <!-- প্রোডাক্টগুলো এখানে লোড হবে -->
     </div>
   </main>
 
@@ -98,31 +95,9 @@
     <p>&copy; 2026 SKYSION MAISON. ALL RIGHTS RESERVED.</p>
   </footer>
 
-  <!-- Firebase Initialization -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCdQ9XMtzELlWmtVvCt86dmkl8Oo4wyBFA",
-      authDomain: "skysion.firebaseapp.com",
-      projectId: "skysion",
-      storageBucket: "skysion.firebasestorage.app",
-      messagingSenderId: "984734912155",
-      appId: "1:984734912155:web:246eb7168f775fb908c03e",
-      measurementId: "G-FXSCM6QDSQ"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    console.log("Firebase Connected in Shop Page");
-  </script>
-
-  <!-- স্ক্রিপ্ট ফাইলগুলো সঠিক ক্রমে দেওয়া হলো -->
-  <script src="js/product.js" defer></script>
-  <script src="js/cart.js" defer></script>
-  <script src="js/wishlist.js" defer></script>
-  <script type="module" src="js/app.js" defer></script>
+  <!-- জাভাস্ক্রিপ্ট ফাইলগুলো কোনো ফোল্ডারের ঝামেলা ছাড়াই সরাসরি রুট থেকে লোড হবে -->
+  <script src="product.js"></script>
+  <script src="cart.js"></script>
 
 </body>
 
