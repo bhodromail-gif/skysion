@@ -88,8 +88,9 @@
 
   <main class="shop-container">
     <h1 style="text-align: center; margin-bottom: 40px;">Our Collection</h1>
-    <div class="product-grid" id="product-list">
-      <!-- প্রোডাক্টগুলো এখানে লোড হবে -->
+    <!-- আইডি এখানে product-container করা হয়েছে যা product.js এর সাথে মিলে -->
+    <div class="product-grid" id="product-container">
+      <!-- প্রোডাক্টগুলো এখানে স্বয়ংক্রিয়ভাবে লোড হবে -->
     </div>
   </main>
 
@@ -117,65 +118,12 @@
     console.log("Firebase Connected in Shop Page");
   </script>
 
-  <!-- স্ক্রিপ্ট ফাইল -->
+  <!-- স্ক্রিপ্ট ফাইলগুলো সঠিক ক্রমে দেওয়া হলো -->
   <script src="js/product.js" defer></script>
   <script src="js/cart.js" defer></script>
   <script src="js/wishlist.js" defer></script>
   <script type="module" src="js/app.js" defer></script>
 
-  <script>
-    const productList = document.getElementById('product-list');
-
-    function loadProducts() {
-      if (typeof products === 'undefined') {
-        productList.innerHTML = "<p>Loading products...</p>";
-        return;
-      }
-      productList.innerHTML = "";
-
-      products.forEach(product => {
-        // সাইজ অপশনগুলো তৈরি করা
-        let sizeOptionsHTML = "";
-        if (product.sizes && product.sizes.length > 0) {
-          product.sizes.forEach(size => {
-            sizeOptionsHTML += `<option value="${size}">${size}</option>`;
-          });
-        }
-
-        // স্টক স্ট্যাটাস টেক্সট ও কালার
-        let stockStatus = product.stock > 0
-          ? `<span style="color: #4ade80; font-size: 11px;">In Stock (${product.stock})</span>`
-          : `<span style="color: #f87171; font-size: 11px;">Out of Stock</span>`;
-
-        let disabledAttr = product.stock === 0 ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : '';
-
-        productList.innerHTML += `
-            <div class="product-card">
-                <img src="${product.image}" alt="${product.name}" loading="lazy">
-                <h3>${product.name}</h3>
-                <p>৳ ${product.price}</p>
-                
-                <!-- স্টক এবং সাইজ ড্রপডাউন সেকশন -->
-                <div style="margin: 10px 0; display: flex; justify-content: space-between; align-items: center;">
-                    <div>${stockStatus}</div>
-                    <div class="size-selector">
-                        <select id="size-${product.id}" style="background: #0b0203; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;">
-                            ${sizeOptionsHTML}
-                        </select>
-                    </div>
-                </div>
-
-                <div class="btn-group">
-                    <button class="add-to-cart" onclick="window.addToCartWithSelectedSize(${product.id})" ${disabledAttr}>Add to Cart</button>
-                    <button class="add-to-wishlist" onclick="window.addToWishlist(${product.id})">Add to Wishlist</button>
-                </div>
-            </div>
-        `;
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded", loadProducts);
-  </script>
 </body>
 
 </html>
