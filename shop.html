@@ -132,14 +132,41 @@
         return;
       }
       productList.innerHTML = "";
+
       products.forEach(product => {
+        // সাইজ অপশনগুলো তৈরি করা
+        let sizeOptionsHTML = "";
+        if (product.sizes && product.sizes.length > 0) {
+          product.sizes.forEach(size => {
+            sizeOptionsHTML += `<option value="${size}">${size}</option>`;
+          });
+        }
+
+        // স্টক স্ট্যাটাস টেক্সট ও কালার
+        let stockStatus = product.stock > 0
+          ? `<span style="color: #4ade80; font-size: 11px;">In Stock (${product.stock})</span>`
+          : `<span style="color: #f87171; font-size: 11px;">Out of Stock</span>`;
+
+        let disabledAttr = product.stock === 0 ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : '';
+
         productList.innerHTML += `
             <div class="product-card">
                 <img src="${product.image}" alt="${product.name}" loading="lazy">
                 <h3>${product.name}</h3>
                 <p>৳ ${product.price}</p>
+                
+                <!-- স্টক এবং সাইজ ড্রপডাউন সেকশন -->
+                <div style="margin: 10px 0; display: flex; justify-content: space-between; align-items: center;">
+                    <div>${stockStatus}</div>
+                    <div class="size-selector">
+                        <select id="size-${product.id}" style="background: #0b0203; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;">
+                            ${sizeOptionsHTML}
+                        </select>
+                    </div>
+                </div>
+
                 <div class="btn-group">
-                    <button class="add-to-cart" onclick="window.addToCart(${product.id})">Add to Cart</button>
+                    <button class="add-to-cart" onclick="window.addToCartWithSelectedSize(${product.id})" ${disabledAttr}>Add to Cart</button>
                     <button class="add-to-wishlist" onclick="window.addToWishlist(${product.id})">Add to Wishlist</button>
                 </div>
             </div>
