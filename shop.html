@@ -22,6 +22,7 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
       padding: 20px;
       text-align: center;
+      border-radius: 8px;
     }
 
     .product-card img {
@@ -29,6 +30,52 @@
       height: 300px;
       object-fit: cover;
       margin-bottom: 15px;
+      border-radius: 4px;
+    }
+
+    .product-card h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .product-card p {
+      font-size: 16px;
+      color: #bbb;
+      margin-bottom: 15px;
+    }
+
+    .size-selector {
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .size-selector select {
+      padding: 6px 12px;
+      background: #111;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .add-to-cart-btn {
+      padding: 10px 15px;
+      background: #fff;
+      color: #000;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+
+    .add-to-cart-btn:hover {
+      background: #ddd;
     }
   </style>
 </head>
@@ -52,7 +99,7 @@
   </header>
 
   <main class="shop-container">
-    <h1 style="text-align: center; margin-bottom: 40px;">Our Collection</h1>
+    <h1 style="text-align: center; margin-bottom: 40px; color: #fff;">Our Collection</h1>
     <div class="product-grid" id="product-container"></div>
   </main>
 
@@ -60,7 +107,7 @@
     <p>&copy; 2026 SKYSION MAISON. ALL RIGHTS RESERVED.</p>
   </footer>
 
-  <!-- সঠিক পাথ -->
+  <!-- জাভাস্ক্রিপ্ট ফাইলগুলো সঠিক ক্রমে সংযুক্ত -->
   <script src="js/product.js"></script>
   <script src="js/cart.js"></script>
 

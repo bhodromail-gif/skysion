@@ -61,14 +61,6 @@
       margin-bottom: 10px;
     }
 
-    .customer-info {
-      font-size: 13px;
-      color: rgba(255, 255, 255, 0.6);
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      padding-top: 10px;
-      margin-bottom: 10px;
-    }
-
     .order-total-row {
       display: flex;
       justify-content: space-between;
@@ -126,9 +118,6 @@
           const order = {
             orderId: row[0] || 'N/A',
             date: row[1] || 'N/A',
-            customerName: row[2] || 'N/A',
-            phone: row[3] || 'N/A',
-            address: row[4] || 'N/A',
             totalPrice: row[5] || 0,
             paymentMethod: row[6] || 'N/A',
             items: row[9] || 'N/A',
@@ -145,10 +134,6 @@
                 <div><span class="status-badge">${order.status}</span></div>
               </div>
               <div class="order-item-row"><span><strong>Items:</strong> ${order.items}</span></div>
-              <div class="customer-info">
-                <p style="margin: 0 0 4px 0;"><strong>Name:</strong> ${order.customerName} | <strong>Phone:</strong> ${order.phone}</p>
-                <p style="margin: 0;"><strong>Address:</strong> ${order.address}</p>
-              </div>
               <div class="order-total-row">
                 <span>Method: ${order.paymentMethod}</span>
                 <span style="color: #d12e43; font-size: 16px;">Total: ৳ ${order.totalPrice}</span>
