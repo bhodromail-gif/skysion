@@ -1,4 +1,3 @@
-// নতুন প্রোডাক্টের তালিকা
 const products = [
     {
         id: 1,
@@ -9,14 +8,12 @@ const products = [
     }
 ];
 
-// শপ পেজে প্রোডাক্ট কার্ডগুলো ডাইনামিকলি রেন্ডার করার কোড
 document.addEventListener("DOMContentLoaded", () => {
     const productContainer = document.getElementById("product-container");
     if (!productContainer) return;
 
     productContainer.innerHTML = "";
     products.forEach(product => {
-        // সাইজ অপশন তৈরি করা
         let sizeOptions = product.sizes.map(size => `<option value="${size}">${size}</option>`).join("");
 
         productContainer.innerHTML += `
