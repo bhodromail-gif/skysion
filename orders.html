@@ -105,25 +105,8 @@
     <div id="my-orders-list">Loading orders...</div>
   </main>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCdQ9XMtzELlWmtVvCt86dmkl8Oo4wyBFA",
-      authDomain: "skysion.firebaseapp.com",
-      projectId: "skysion",
-      storageBucket: "skysion.firebasestorage.app",
-      messagingSenderId: "984734912155",
-      appId: "1:984734912155:web:246eb7168f775fb908c03e",
-      measurementId: "G-FXSCM6QDSQ"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // Google Script থেকে ডাটা লোড করার লজিক
+  <!-- Google Script থেকে ডাটা লোড করার লজিক -->
+  <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNnaYNC-Nl-R1jfb_VZUpXfnOqZ4zFetryclJG_vc0zHarou8ofRzjd0VU7F1cUiVu/exec';
     const ordersListContainer = document.getElementById('my-orders-list');
 
@@ -131,18 +114,24 @@
       try {
         const response = await fetch(SCRIPT_URL);
         const data = await response.json();
+
+        if (!data || data.length <= 1) {
+          ordersListContainer.innerHTML = "<p>No orders found.</p>";
+          return;
+        }
+
         ordersListContainer.innerHTML = "";
 
         data.slice(1).reverse().forEach((row) => {
           const order = {
-            orderId: row[0],
-            date: row[1],
-            customerName: row[2],
-            phone: row[3],
-            address: row[4],
-            totalPrice: row[5],
-            paymentMethod: row[6],
-            items: row[9],
+            orderId: row[0] || 'N/A',
+            date: row[1] || 'N/A',
+            customerName: row[2] || 'N/A',
+            phone: row[3] || 'N/A',
+            address: row[4] || 'N/A',
+            totalPrice: row[5] || 0,
+            paymentMethod: row[6] || 'N/A',
+            items: row[9] || 'N/A',
             status: row[10] || 'Pending'
           };
 
@@ -168,7 +157,8 @@
           `;
         });
       } catch (error) {
-        ordersListContainer.innerHTML = "<p>Error loading orders. Please check your connection.</p>";
+        console.error("Error loading orders:", error);
+        ordersListContainer.innerHTML = "<p style='color: #d12e43;'>Failed to load orders. Please check your internet connection.</p>";
       }
     }
 
