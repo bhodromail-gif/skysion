@@ -1,16 +1,15 @@
-// লোকাল স্টোরেজ থেকে কার্টের ডাটা গেট করা
+// লোকাল স্টোরেজ থেকে কার্টের ডাটা রিড করা
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-// ১. সিলেক্ট করা সাইজসহ কার্টে প্রোডাক্ট অ্যাড করার ফাংশন
+// ১. নির্দিষ্ট সাইজসহ কার্টে প্রোডাক্ট অ্যাড করার ফাংশন
 function addToCartWithSelectedSize(productId) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
 
-    // ইউজার যে সাইজটি সিলেক্ট করেছে তা ড্রপডাউন থেকে নেওয়া
     const sizeSelect = document.getElementById(`size-${productId}`);
     const selectedSize = sizeSelect ? sizeSelect.value : "M";
 
-    // একই প্রোডাক্ট ভিন্ন সাইজের হতে পারে, তাই id এবং size মিলিয়ে চেক করা হচ্ছে
+    // একই প্রোডাক্ট ভিন্ন সাইজের হলে আলাদা আইটেম হিসেবে গণ্য হবে
     const cartItem = cart.find(item => item.id === productId && item.size === selectedSize);
 
     if (cartItem) {
@@ -21,11 +20,14 @@ function addToCartWithSelectedSize(productId) {
 
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
-    alert(`${product.name} (${selectedSize}) কার্টে যোগ করা হয়েছে!`);
-    if (document.getElementById('cart-items-body')) displayCart();
+    alert(`Success: ${product.name} (Size: ${selectedSize}) added to cart!`);
+    
+    if (document.getElementById('cart-items-body')) {
+        displayCart();
+    }
 }
 
-// পুরোনো addToCart ফাংশনকে নতুনটির সাথে কানেক্ট রাখা হলো
+// পুরোনো addToCart ফাংশনকে নতুনটির সাথে যুক্ত রাখা হলো
 function addToCart(productId) {
     addToCartWithSelectedSize(productId);
 }
@@ -38,7 +40,7 @@ function removeFromCart(productId, size) {
     updateCartCount();
 }
 
-// ৩. নেভিগেশন বারে কার্টের কাউন্ট আপডেট
+// ৩. নেভিগেশন বারে কার্টের কাউন্ট আপডেট করা
 function updateCartCount() {
     const cartCountElement = document.getElementById('cart-count');
     if (cartCountElement) {
@@ -47,7 +49,7 @@ function updateCartCount() {
     }
 }
 
-// ৪. কার্ট পেজ রেন্ডার
+// ৪. কার্ট পেজ রেন্ডার করা
 function displayCart() {
     const cartBody = document.getElementById('cart-items-body');
     const totalPriceElement = document.getElementById('cart-total-price');
@@ -57,7 +59,7 @@ function displayCart() {
     let grandTotal = 0;
 
     if (cart.length === 0) {
-        cartBody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 30px;">Your cart is empty.</td></tr>`;
+        cartBody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 40px; color: #aaa;">Your cart is empty.</td></tr>`;
         if (totalPriceElement) totalPriceElement.innerText = "৳ ০";
         return;
     }
@@ -69,24 +71,24 @@ function displayCart() {
             grandTotal += itemTotal;
             cartBody.innerHTML += `
                 <tr>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <img src="${product.image}" width="50" loading="lazy" alt="${product.name}"> 
+                    <td style="padding: 15px;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <img src="${product.image}" width="60" height="60" style="object-fit:cover; border-radius:4px;" alt="${product.name}"> 
                             <div>
-                                <span>${product.name}</span><br>
-                                <small style="color: #d12e43;">Size: ${item.size || 'M'} | Qty: ${item.quantity}</small>
+                                <span style="font-weight: bold; color: #fff;">${product.name}</span><br>
+                                <small style="color: #ff4d4d; font-weight: 600;">Size: ${item.size || 'M'} | Qty: ${item.quantity}</small>
                             </div>
                         </div>
                     </td>
-                    <td>৳ ${itemTotal}</td>
-                    <td><button class="remove-btn" onclick="removeFromCart(${product.id}, '${item.size}')">&times;</button></td>
+                    <td style="color: #fff;">৳ ${itemTotal}</td>
+                    <td><button onclick="removeFromCart(${product.id}, '${item.size}')" style="background: #ff4d4d; color: #fff; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;">&times;</button></td>
                 </tr>`;
         }
     });
     if (totalPriceElement) totalPriceElement.innerText = `৳ ${grandTotal}`;
 }
 
-// ৫. চেকাউট সামারি
+// ৫. চেকাউট সামারি তৈরি করা
 let totalOrderPrice = 0;
 function displayCheckoutSummary() {
     const summaryContainer = document.getElementById('checkout-summary-items');
@@ -95,14 +97,15 @@ function displayCheckoutSummary() {
 
     summaryContainer.innerHTML = "";
     totalOrderPrice = 0;
+    
     cart.forEach(item => {
         const product = products.find(p => p.id === item.id);
         if (product) {
             let itemTotal = product.price * item.quantity;
             totalOrderPrice += itemTotal;
             summaryContainer.innerHTML += `
-                <div class="summary-item">
-                    <span>${product.name} (${item.size}) x${item.quantity}</span> 
+                <div class="summary-item" style="display: flex; justify-content: space-between; margin-bottom: 10px; color: #ccc;">
+                    <span>${product.name} (Size: ${item.size}) x${item.quantity}</span> 
                     <span>৳ ${itemTotal}</span>
                 </div>`;
         }
@@ -110,28 +113,33 @@ function displayCheckoutSummary() {
     if (totalElement) totalElement.innerText = `৳ ${totalOrderPrice}`;
 }
 
-// ৬. অর্ডার প্লেস (গুগল শিট কানেক্টেড)
+// ৬. গুগল শিটে অর্ডার প্লেস করার মূল ফাংশন (সাইজসহ)
 async function placeOrder(method) {
     let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    if (cartItems.length === 0) { alert('Cart is empty!'); return; }
+    if (cartItems.length === 0) { 
+        alert('Your cart is empty!'); 
+        return; 
+    }
 
     const orderData = {
         orderId: "SK-" + Math.floor(100000 + Math.random() * 900000),
-        date: new Date().toLocaleDateString('bn-BD'),
-        customerName: document.getElementById('name')?.value || "",
-        phone: document.getElementById('phone')?.value || "",
-        address: document.getElementById('address')?.value || "",
+        date: new Date().toLocaleDateString('bn-BD') + " " + new Date().toLocaleTimeString(),
+        customerName: document.getElementById('name')?.value || "Guest",
+        phone: document.getElementById('phone')?.value || "N/A",
+        address: document.getElementById('address')?.value || "N/A",
         totalPrice: totalOrderPrice,
         paymentMethod: method,
         senderNumber: document.getElementById('senderNumber')?.value || "N/A",
         transactionId: document.getElementById('transactionId')?.value || "N/A",
+        // এখানে খুব স্পষ্টভাবে সাইজ যুক্ত করে দেওয়া হয়েছে যা গুগল শিটে ও অর্ডার পেজে শো করবে
         items: cartItems.map(i => {
             const product = products.find(p => p.id === i.id);
-            return `${product ? product.name : 'Unknown'} [Size: ${i.size}] (x${i.quantity})`;
-        }).join(", ")
+            return `${product ? product.name : 'Unknown Product'} [Size: ${i.size}] (Qty: ${i.quantity})`;
+        }).join(" | ")
     };
 
     try {
+        // আপনার গুগল অ্যাপস স্ক্রিপ্টের ওয়েব অ্যাপ ইউআরএল এখানে বসানো আছে
         await fetch('https://script.google.com/macros/s/AKfycbwNnaYNC-Nl-R1jfb_VZUpXfnOqZ4zFetryclJG_vc0zHarou8ofRzjd0VU7F1cUiVu/exec', {
             method: 'POST',
             mode: 'no-cors',
@@ -147,10 +155,12 @@ async function placeOrder(method) {
         localStorage.removeItem('cart');
         window.location.href = 'orders.html';
     } catch (error) {
+        console.error("Order Error:", error);
         alert('Error placing order. Please try again.');
     }
 }
 
+// পেজ লোড হওয়ার সাথে সাথে ফাংশনগুলো কল করা
 document.addEventListener("DOMContentLoaded", () => {
     updateCartCount();
     displayCart();

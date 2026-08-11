@@ -1,117 +1,57 @@
+// আপনার শপের প্রোডাক্ট লিস্ট (প্রয়োজনে এখানে প্রোডাক্ট বাড়াতে বা কমাতে পারেন)
 const products = [
     {
         id: 1,
-        name: "SILK SKYSION SHIRT",
-        image: "images/img/products/product-1.jpg", 
-        price: 399,
-        sizes: ["M", "L", "XL", "XXL"],
-        stock: 12
+        name: "Skysion Signature Oversized Tee",
+        price: 1250,
+        image: "images/img/products/p1.jpeg"
     },
     {
         id: 2,
-        name: "OBSIDIAN OVERSIZED HOODIE",
-        image: "images/img/products/product-2.jpg", 
-        price: 399,
-        sizes: ["M", "L", "XL", "XXL"],
-        stock: 8
+        name: "Classic Black Heavyweight Hoodie",
+        price: 2400,
+        image: "images/img/products/p2.jpeg"
     },
     {
         id: 3,
-        name: "PREMIUM SKYSION JACKET",
-        image: "images/img/products/product-3.jpg", 
-        price: 399,
-        sizes: ["M", "L", "XL", "XXL"],
-        stock: 5
+        name: "Minimalist Aesthetic Cargo Pants",
+        price: 2100,
+        image: "images/img/products/p3.jpeg"
     },
     {
         id: 4,
-        name: "STANDARD SKYSION T-SHIRT",
-        image: "images/img/products/product-4.png", 
-        price: 399,
-        sizes: ["M", "L", "XL", "XXL"],
-        stock: 15
-    },
-    {
-        id: 5,
-        name: "DELUXE SKYSION SHIRT",
-        image: "images/img/products/product-5.png",
-        price: 399,
-        sizes: ["M", "L", "XL", "XXL"],
-        stock: 10
-    },
-    {  
-        id: 6,
-        name: "DELUXE SKYSION SHIRT",
-        image: "images/img/products/product-6.png",
-        price: 399,
-        sizes: ["M", "L", "XL","XXL"],
-        stock: 7
-    },
-    {         
-        id: 7,
-        name: "DELUXE SKYSION SHIRT",
-        image: "images/img/products/product-7.png",
-        price: 399,
-        sizes: ["M", "L", "XL", "XXL"],
-        stock: 4
-    },
-    {         
-        id: 8,
-        name: "DELUXE SKYSION SHIRT",
-        image: "images/img/products/product-8.png",
-        price: 399,
-        sizes: ["M", "L", "XL", "XXL"],
-        stock: 20
+        name: "Vintage Washed Denim Jacket",
+        price: 3200,
+        image: "images/img/products/p4.jpeg"
     }
 ];
 
-function displayProducts() {
-    const productContainer = document.getElementById('product-container');
-    if (productContainer) {
-        productContainer.innerHTML = ""; 
-        products.forEach(product => {
-            // সাইজগুলোর অপশন নিখুঁতভাবে তৈরি করার জন্য আলাদা লজিক
-            let sizeOptionsHTML = "";
-            if (product.sizes && product.sizes.length > 0) {
-                product.sizes.forEach(size => {
-                    sizeOptionsHTML += `<option value="${size}">${size}</option>`;
-                });
-            }
+// শপ পেজে প্রোডাক্ট কার্ডগুলো অটোমেটিক শো করানোর জন্য
+document.addEventListener("DOMContentLoaded", () => {
+    const productContainer = document.getElementById("product-container");
+    if (!productContainer) return;
 
-            // স্টক স্ট্যাটাস টেক্সট ও কালার
-            let stockStatus = product.stock > 0 
-                ? `<span style="color: #4ade80; font-size: 11px;">In Stock (${product.stock})</span>` 
-                : `<span style="color: #f87171; font-size: 11px;">Out of Stock</span>`;
-
-            // প্রোডাক্ট কার্ড রেন্ডার
-            productContainer.innerHTML += `
-                <div class="product-card">
-                    <div class="img-container">
-                        <img src="${product.image}" alt="${product.name}" loading="lazy">
-                    </div>
-                    <div class="product-details">
-                        <h3>${product.name}</h3>
-                        <p class="price">৳ ${product.price}</p>
-                        
-                        <!-- স্টক এবং সাইজ ড্রপডাউন সেকশন -->
-                        <div style="margin: 8px 0; display: flex; justify-content: space-between; align-items: center;">
-                            <div>${stockStatus}</div>
-                            <div class="size-selector">
-                                <select id="size-${product.id}" style="background: #0b0203; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer;">
-                                    ${sizeOptionsHTML}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
-                            <button class="btn-premium" onclick="addToCartWithSelectedSize(${product.id})" ${product.stock === 0 ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>ADD TO CART</button>
-                            <button class="btn-premium" style="background: transparent; border: 1px solid #d12e43; color: #d12e43;" onclick="addToWishlist(${product.id})">♥</button>
-                        </div>
-                    </div>
+    productContainer.innerHTML = "";
+    products.forEach(product => {
+        productContainer.innerHTML += `
+            <div class="product-card">
+                <img src="${product.image}" alt="${product.name}" loading="lazy">
+                <h3>${product.name}</h3>
+                <p>৳ ${product.price}</p>
+                
+                <div class="size-selector">
+                    <label style="font-size: 13px; color: #aaa;">Size:</label>
+                    <select id="size-${product.id}">
+                        <option value="S">S</option>
+                        <option value="M" selected>M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                    </select>
                 </div>
-            `;
-        });
-    }
-}
 
-document.addEventListener("DOMContentLoaded", displayProducts);
+                <button class="add-to-cart-btn" onclick="addToCartWithSelectedSize(${product.id})">Add to Cart</button>
+            </div>
+        `;
+    });
+});
