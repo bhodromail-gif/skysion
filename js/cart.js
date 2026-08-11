@@ -1,7 +1,7 @@
-// লোকাল স্টোরেজ থেকে কার্টের ডাটা রিড করা
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
+let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
 
-// ১. নির্দিষ্ট সাইজসহ কার্টে প্রোডাক্ট অ্যাড করার ফাংশন
+// ১. নির্দিষ্ট সাইজসহ কার্টে অ্যাড করার ফাংশন
 function addToCartWithSelectedSize(productId) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
@@ -9,7 +9,6 @@ function addToCartWithSelectedSize(productId) {
     const sizeSelect = document.getElementById(`size-${productId}`);
     const selectedSize = sizeSelect ? sizeSelect.value : "M";
 
-    // একই প্রোডাক্ট ভিন্ন সাইজের হলে আলাদা আইটেম হিসেবে গণ্য হবে
     const cartItem = cart.find(item => item.id === productId && item.size === selectedSize);
 
     if (cartItem) {
@@ -27,20 +26,28 @@ function addToCartWithSelectedSize(productId) {
     }
 }
 
-// পুরোনো addToCart ফাংশনকে নতুনটির সাথে যুক্ত রাখা হলো
 function addToCart(productId) {
     addToCartWithSelectedSize(productId);
 }
 
-// ২. কার্ট থেকে প্রোডাক্ট রিমুভ করার ফাংশন
-function removeFromCart(productId, size) {
-    cart = cart.filter(item => !(item.id === productId && item.size === size));
-    localStorage.setItem('cart', JSON.stringify(cart));
-    displayCart();
-    updateCartCount();
+// ২. উইশলিস্টে প্রোডাক্ট অ্যাড করার ফাংশন
+function addToWishlist(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    if (!wishlist.some(item => item.id === productId)) {
+        wishlist.push(product);
+        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        alert(`${product.name} has been added to your wishlist!`);
+    } else {
+        alert('This item is already in your wishlist!');
+    }
+    if (typeof displayWishlist === 'function') {
+        displayWishlist();
+    }
 }
 
-// ৩. নেভিগেশন বারে কার্টের কাউন্ট আপডেট করা
+// ৩. কার্ট কাউন্ট আপডেট করা
 function updateCartCount() {
     const cartCountElement = document.getElementById('cart-count');
     if (cartCountElement) {
@@ -76,7 +83,7 @@ function displayCart() {
                             <img src="${product.image}" width="60" height="60" style="object-fit:cover; border-radius:4px;" alt="${product.name}"> 
                             <div>
                                 <span style="font-weight: bold; color: #fff;">${product.name}</span><br>
-                                <small style="color: #ff4d4d; font-weight: 600;">Size: ${item.size || 'M'} | Qty: ${item.quantity}</small>
+                                <small style="color: #ff4d4d; font-weight: 600;">Size: ${item.size} | Qty: ${item.quantity}</small>
                             </div>
                         </div>
                     </td>
@@ -88,7 +95,13 @@ function displayCart() {
     if (totalPriceElement) totalPriceElement.innerText = `৳ ${grandTotal}`;
 }
 
-// ৫. চেকাউট সামারি তৈরি করা
+function removeFromCart(productId, size) {
+    cart = cart.filter(item => !(item.id === productId && item.size === size));
+    localStorage.setItem('cart', JSON.stringify(cart));
+    displayCart();
+    updateCartCount();
+}
+
 let totalOrderPrice = 0;
 function displayCheckoutSummary() {
     const summaryContainer = document.getElementById('checkout-summary-items');
@@ -113,7 +126,7 @@ function displayCheckoutSummary() {
     if (totalElement) totalElement.innerText = `৳ ${totalOrderPrice}`;
 }
 
-// ৬. গুগল শিটে অর্ডার প্লেস করার মূল ফাংশন (সাইজসহ)
+// ৫. অর্ডার প্লেস করার ফাংশন (গুগল শিট এবং লোকাল স্টোরেজে সাইজসহ সেভ হবে)
 async function placeOrder(method) {
     let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
     if (cartItems.length === 0) { 
@@ -131,7 +144,6 @@ async function placeOrder(method) {
         paymentMethod: method,
         senderNumber: document.getElementById('senderNumber')?.value || "N/A",
         transactionId: document.getElementById('transactionId')?.value || "N/A",
-        // এখানে খুব স্পষ্টভাবে সাইজ যুক্ত করে দেওয়া হয়েছে যা গুগল শিটে ও অর্ডার পেজে শো করবে
         items: cartItems.map(i => {
             const product = products.find(p => p.id === i.id);
             return `${product ? product.name : 'Unknown Product'} [Size: ${i.size}] (Qty: ${i.quantity})`;
@@ -139,7 +151,6 @@ async function placeOrder(method) {
     };
 
     try {
-        // আপনার গুগল অ্যাপস স্ক্রিপ্টের ওয়েব অ্যাপ ইউআরএল এখানে বসানো আছে
         await fetch('https://script.google.com/macros/s/AKfycbwNnaYNC-Nl-R1jfb_VZUpXfnOqZ4zFetryclJG_vc0zHarou8ofRzjd0VU7F1cUiVu/exec', {
             method: 'POST',
             mode: 'no-cors',
@@ -160,7 +171,6 @@ async function placeOrder(method) {
     }
 }
 
-// পেজ লোড হওয়ার সাথে সাথে ফাংশনগুলো কল করা
 document.addEventListener("DOMContentLoaded", () => {
     updateCartCount();
     displayCart();

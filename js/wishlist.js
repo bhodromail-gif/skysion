@@ -1,54 +1,30 @@
-// উইশলিস্টে প্রোডাক্ট অ্যাড করার ফাংশন
-function addToWishlist(productId) {
-    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-    
-    if (!wishlist.includes(productId)) {
-        wishlist.push(productId);
-        localStorage.setItem('wishlist', JSON.stringify(wishlist));
-        alert("Product added to Wishlist!");
-    } else {
-        alert("Product is already in your Wishlist!");
-    }
-}
-
-// উইশলিস্ট পেজে প্রোডাক্ট দেখানোর ফাংশন
-function displayWishlist() {
-    const container = document.getElementById('wishlist-items-container');
-    if (!container) return;
+document.addEventListener("DOMContentLoaded", () => {
+    const wishlistContainer = document.getElementById("wishlist-container");
+    if (!wishlistContainer) return;
 
     let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-    container.innerHTML = "";
 
     if (wishlist.length === 0) {
-        container.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.5);">Your wishlist is empty.</p>`;
+        wishlistContainer.innerHTML = `<p style="text-align: center; color: #888; padding: 40px;">Your wishlist is empty.</p>`;
         return;
     }
 
-    wishlist.forEach(productId => {
-        const product = products.find(p => p.id === productId);
-        if (product) {
-            container.innerHTML += `
-                <div class="wishlist-card">
-                    <button class="remove-wishlist" onclick="removeFromWishlist(${product.id})">&times;</button>
-                    <div class="img-container">
-                        <img src="${product.image}" alt="${product.name}" loading="lazy">
-                    </div>
-                    <h3>${product.name}</h3>
-                    <p class="price">৳ ${product.price}</p>
-                    <button onclick="addToCart(${product.id})" class="add-to-cart-btn" style="background:#58111a; color:#fff; border:none; padding:10px 20px; cursor:pointer; width:100%;">Add to Cart</button>
-                </div>
-            `;
-        }
+    wishlistContainer.innerHTML = "";
+    wishlist.forEach(product => {
+        wishlistContainer.innerHTML += `
+            <div class="product-card" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 20px;">
+                <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 250px; object-fit: cover; margin-bottom: 15px; border-radius: 4px;">
+                <h3 style="font-size: 16px; color: #fff; margin-bottom: 10px;">${product.name}</h3>
+                <p style="color: #bbb; margin-bottom: 15px;">৳ ${product.price}</p>
+                <button onclick="removeFromWishlist(${product.id})" style="background: #ff4d4d; color: #fff; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; font-weight: bold;">Remove</button>
+            </div>
+        `;
     });
-}
+});
 
-// উইশলিস্ট থেকে প্রোডাক্ট সরানোর ফাংশন
 function removeFromWishlist(productId) {
     let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-    wishlist = wishlist.filter(id => id !== productId);
+    wishlist = wishlist.filter(item => item.id !== productId);
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
-    displayWishlist(); // রিফ্রেশ
+    location.reload();
 }
-
-// পেজ লোড হলে উইশলিস্ট দেখাবে
-document.addEventListener("DOMContentLoaded", displayWishlist);

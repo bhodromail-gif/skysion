@@ -1,56 +1,41 @@
-// আপনার শপের প্রোডাক্ট লিস্ট (প্রয়োজনে এখানে প্রোডাক্ট বাড়াতে বা কমাতে পারেন)
+// নতুন প্রোডাক্টের তালিকা
 const products = [
     {
         id: 1,
-        name: "Skysion Signature Oversized Tee",
-        price: 1250,
-        image: "images/img/products/p1.jpeg"
-    },
-    {
-        id: 2,
-        name: "Classic Black Heavyweight Hoodie",
-        price: 2400,
-        image: "images/img/products/p2.jpeg"
-    },
-    {
-        id: 3,
-        name: "Minimalist Aesthetic Cargo Pants",
-        price: 2100,
-        image: "images/img/products/p3.jpeg"
-    },
-    {
-        id: 4,
-        name: "Vintage Washed Denim Jacket",
-        price: 3200,
-        image: "images/img/products/p4.jpeg"
+        name: "Spider-Man Brand New Day Edition",
+        price: 399,
+        image: "images/img/products/product-01.jpg",
+        sizes: ["M", "L"]
     }
 ];
 
-// শপ পেজে প্রোডাক্ট কার্ডগুলো অটোমেটিক শো করানোর জন্য
+// শপ পেজে প্রোডাক্ট কার্ডগুলো ডাইনামিকলি রেন্ডার করার কোড
 document.addEventListener("DOMContentLoaded", () => {
     const productContainer = document.getElementById("product-container");
     if (!productContainer) return;
 
     productContainer.innerHTML = "";
     products.forEach(product => {
+        // সাইজ অপশন তৈরি করা
+        let sizeOptions = product.sizes.map(size => `<option value="${size}">${size}</option>`).join("");
+
         productContainer.innerHTML += `
-            <div class="product-card">
-                <img src="${product.image}" alt="${product.name}" loading="lazy">
-                <h3>${product.name}</h3>
-                <p>৳ ${product.price}</p>
+            <div class="product-card" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 20px;">
+                <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 300px; object-fit: cover; margin-bottom: 15px; border-radius: 4px;" loading="lazy">
+                <h3 style="font-size: 18px; margin-bottom: 10px; color: #fff;">${product.name}</h3>
+                <p style="font-size: 16px; color: #bbb; margin-bottom: 15px;">৳ ${product.price}</p>
                 
-                <div class="size-selector">
-                    <label style="font-size: 13px; color: #aaa;">Size:</label>
-                    <select id="size-${product.id}">
-                        <option value="S">S</option>
-                        <option value="M" selected>M</option>
-                        <option value="L">L</option>
-                        <option value="XL">XL</option>
-                        <option value="XXL">XXL</option>
+                <div style="margin: 15px 0;">
+                    <label style="font-size: 13px; color: #aaa;">Size: </label>
+                    <select id="size-${product.id}" style="padding: 6px 12px; background: #111; color: #fff; border: 1px solid #444; border-radius: 4px; cursor: pointer;">
+                        ${sizeOptions}
                     </select>
                 </div>
 
-                <button class="add-to-cart-btn" onclick="addToCartWithSelectedSize(${product.id})">Add to Cart</button>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="addToCartWithSelectedSize(${product.id})" style="flex: 2; padding: 10px; background: #fff; color: #000; border: none; cursor: pointer; font-weight: bold; border-radius: 4px;">Add to Cart</button>
+                    <button onclick="addToWishlist(${product.id})" style="flex: 1; padding: 10px; background: #333; color: #fff; border: none; cursor: pointer; font-weight: bold; border-radius: 4px;">Wishlist</button>
+                </div>
             </div>
         `;
     });
