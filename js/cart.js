@@ -42,9 +42,6 @@ function addToWishlist(productId) {
     } else {
         alert('This item is already in your wishlist!');
     }
-    if (typeof displayWishlist === 'function') {
-        displayWishlist();
-    }
 }
 
 // ৩. কার্ট কাউন্ট আপডেট করা
@@ -126,7 +123,7 @@ function displayCheckoutSummary() {
     if (totalElement) totalElement.innerText = `৳ ${totalOrderPrice}`;
 }
 
-// ৫. অর্ডার প্লেস করার ফাংশন (গুগল শিট এবং লোকাল স্টোরেজে সাইজসহ সেভ হবে)
+// ৫. অর্ডার প্লেস করার ফাংশন (আপনার নতুন গুগল অ্যাপস স্ক্রিপ্ট লিংকের সাথে)
 async function placeOrder(method) {
     let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
     if (cartItems.length === 0) { 
@@ -146,12 +143,13 @@ async function placeOrder(method) {
         transactionId: document.getElementById('transactionId')?.value || "N/A",
         items: cartItems.map(i => {
             const product = products.find(p => p.id === i.id);
-            return `${product ? product.name : 'Unknown Product'} [Size: ${i.size}] (Qty: ${i.quantity})`;
-        }).join(" | ")
+            return product ? product.name : 'Unknown Product';
+        }).join(", "),
+        size: cartItems.map(i => i.size).join(", ")
     };
 
     try {
-        await fetch('https://script.google.com/macros/s/AKfycbwNnaYNC-Nl-R1jfb_VZUpXfnOqZ4zFetryclJG_vc0zHarou8ofRzjd0VU7F1cUiVu/exec', {
+        await fetch('https://script.google.com/macros/s/AKfycbydMsxz-p0o-wPDdpbV92zQr3lZSi8D3IQracFdRAc-4qvooOPLyc1wNHTq55sXqPJAiQ/exec', {
             method: 'POST',
             mode: 'no-cors',
             body: JSON.stringify(orderData)
@@ -175,4 +173,4 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCartCount();
     displayCart();
     displayCheckoutSummary();
-});
+})
